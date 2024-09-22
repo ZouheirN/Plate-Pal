@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:platepal/features/home/bloc/recipes_home_bloc.dart';
 import 'package:platepal/main_wrapper.dart';
@@ -9,6 +10,9 @@ final logger = Logger();
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
+
+  await Hive.initFlutter();
+  await Hive.openBox('favoritesBox');
 
   runApp(const MyApp());
 }

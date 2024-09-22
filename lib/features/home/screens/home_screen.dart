@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:platepal/features/home/bloc/recipes_home_bloc.dart';
 import 'package:platepal/features/home/models/random_recipe_model.dart';
+import 'package:platepal/features/recipe/screens/recipe_screen.dart';
+import 'package:platepal/widgets/search_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +15,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    context.read<RecipesHomeBloc>().add(RecipesHomeFetchRandomEvent());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Container(
                     color: Theme.of(context).colorScheme.primary,
-                    height: 250,
+                    height: MediaQuery.of(context).size.height * 0.3,
                   ),
                 ),
                 SafeArea(
@@ -52,22 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const Gap(20),
-                      ListTile(
-                        title: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Search for recipes',
-                              border: InputBorder.none,
-                              icon: Icon(Icons.search),
-                            ),
-                          ),
-                        ),
-                      )
+                      SearchWidget(_searchController),
                     ],
                   ),
                 ),
@@ -93,8 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 BlocBuilder<RecipesHomeBloc, RecipesHomeState>(
-                  bloc: BlocProvider.of<RecipesHomeBloc>(context)
-                    ..add(RecipesHomeFetchRandomEvent()),
                   builder: (context, state) {
                     if (state is RecipesHomeLoading) {
                       return const Center(
@@ -125,64 +124,76 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRandomRecipe(List<Recipe>? recipes) {
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: recipes!.length,
-      itemBuilder: (context, index) {
-        final recipe = recipes[index];
-
-        // skip if image is null
-        if (recipe.image == null) {
-          return const SizedBox();
-        }
-
-        return ListTile(
-          title: CachedNetworkImage(
-            imageUrl: recipe.image!,
-            imageBuilder: (context, imageProvider) {
-              return Container(
-                width: 150,
-                height: 250,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black,
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        recipe.title!,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
+    return SizedBox(
+      height: 240,
+      child: CarouselView(
+        onTap: (index) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => RecipeScreen(
+                recipe: recipes[index],
+              ),
+            ),
+          );
+        },
+        itemExtent: MediaQuery.of(context).size.width * 0.6,
+        itemSnapping: false,
+        elevation: 4,
+        padding: const EdgeInsets.all(8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        children: [
+          for (final recipe in recipes!)
+            if (recipe.image != null)
+              CachedNetworkImage(
+                imageUrl: recipe.image!,
+                imageBuilder: (context, imageProvider) {
+                  return Container(
+                    width: 150,
+                    height: 250,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
                       ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black,
+                          ],
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 8, left: 8, right: 8),
+                            child: Text(
+                              recipe.title!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                // fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+        ],
+      ),
     );
   }
 }
