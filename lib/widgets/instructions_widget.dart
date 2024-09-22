@@ -19,6 +19,8 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
 
     return Stepper(
       physics: const NeverScrollableScrollPhysics(),
+      // margin: const EdgeInsets.all(88),
+      margin: const EdgeInsets.only(left: 11111116, right: 16, top: 16),
       steps: [
         for (var i = 0; i < steps.length; i++)
           Step(
@@ -29,20 +31,39 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
                 if (steps[i].equipment!.isNotEmpty)
                   Column(
                     children: [
-                      const Text('Equipment:'),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Equipment',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
                       for (var equipment in steps[i].equipment!)
-                        Text(equipment.name!),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            '• ${equipment.name!}',
+                          ),
+                        ),
                     ],
                   ),
                 if (steps[i].ingredients!.isNotEmpty)
                   Column(
                     children: [
-                      const Text(
-                        'Ingredients:',
-                        textAlign: TextAlign.left,
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Ingredients',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       for (var ingredient in steps[i].ingredients!)
-                        Text(ingredient.name!),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            '• ${ingredient.name!}',
+                          ),
+                        ),
                     ],
                   ),
                 if (steps[i].length != null)

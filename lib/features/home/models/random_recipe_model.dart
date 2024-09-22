@@ -1,3 +1,7 @@
+import 'package:hive/hive.dart';
+
+part 'random_recipe_model.g.dart';
+
 class RandomRecipeModel {
   List<Recipe>? recipes;
 
@@ -12,21 +16,37 @@ class RandomRecipeModel {
   }
 }
 
+@HiveType(typeId: 0)
 class Recipe{
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String? title;
+  @HiveField(2)
   final String? image;
+  @HiveField(3)
   final int? servings;
+  @HiveField(4)
   final int? readyInMinutes;
+  @HiveField(5)
   final int? cookingMinutes;
+  @HiveField(6)
   final int? preparationMinutes;
+  @HiveField(7)
   final bool? cheap;
+  @HiveField(8)
   final bool? dairyFree;
+  @HiveField(9)
   final bool? glutenFree;
+  @HiveField(10)
   final bool? vegan;
+  @HiveField(11)
   final bool? vegetarian;
+  @HiveField(12)
   final List<String>? dishTypes;
+  @HiveField(13)
   final List<ExtendedIngredients>? extendedIngredients;
+  @HiveField(14)
   final String? summary;
 
   Recipe({
@@ -68,16 +88,27 @@ class Recipe{
   }
 }
 
+@HiveType(typeId: 1)
 class ExtendedIngredients {
+  @HiveField(0)
   final String? aisle;
+  @HiveField(1)
   final double? amount;
+  @HiveField(2)
   final String? consistency;
+  @HiveField(3)
   final String? image;
+  @HiveField(4)
   final Measures? measures;
+  @HiveField(5)
   final List<String>? meta;
+  @HiveField(6)
   final String? name;
+  @HiveField(7)
   final String? original;
+  @HiveField(8)
   final String? originalName;
+  @HiveField(9)
   final String? unit;
 
   ExtendedIngredients({
@@ -109,8 +140,11 @@ class ExtendedIngredients {
   }
 }
 
+@HiveType(typeId: 2)
 class Measures {
+  @HiveField(0)
   final Metric? metric;
+  @HiveField(1)
   final Us? us;
 
   Measures({
@@ -126,9 +160,13 @@ class Measures {
   }
 }
 
+@HiveType(typeId: 3)
 class Metric {
+  @HiveField(0)
   final double? amount;
+  @HiveField(1)
   final String? unitShort;
+  @HiveField(2)
   final String? unitLong;
 
   Metric({
@@ -146,9 +184,13 @@ class Metric {
   }
 }
 
+@HiveType(typeId: 4)
 class Us {
+  @HiveField(0)
   final double? amount;
+  @HiveField(1)
   final String? unitShort;
+  @HiveField(2)
   final String? unitLong;
 
   Us({

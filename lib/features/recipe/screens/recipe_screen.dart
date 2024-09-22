@@ -36,9 +36,17 @@ class _RecipeScreenState extends State<RecipeScreen> {
           IconButton(
             onPressed: () {
               if (FavoritesBox.isFavorite(widget.recipe)) {
-                FavoritesBox.removeFavorite(widget.recipe);
+                FavoritesBox.removeFavorite(widget.recipe.id!);
               } else {
-                FavoritesBox.addFavorite(widget.recipe);
+                final instructions =
+                    _recipeBloc.state is RecipeInstructionSuccess
+                        ? (_recipeBloc.state as RecipeInstructionSuccess)
+                            .recipeInstructionModel
+                        : null;
+
+                if (instructions != null) {
+                  FavoritesBox.addFavorite(widget.recipe, instructions);
+                }
               }
             },
             icon: ValueListenableBuilder(

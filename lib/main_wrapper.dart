@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:platepal/features/favorites/screens/favorites_screen.dart';
 import 'package:platepal/features/home/screens/home_screen.dart';
 
 class MainWrapper extends StatefulWidget {
@@ -43,7 +44,7 @@ class _MainWrapperState extends State<MainWrapper> {
         index: _selectedIndex,
         children: [
           const HomeScreen(),
-          Container(),
+          const FavoritesScreen(),
           Container(),
         ],
       ),

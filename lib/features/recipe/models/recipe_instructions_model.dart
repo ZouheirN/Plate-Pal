@@ -1,11 +1,17 @@
 import 'dart:convert';
+import 'package:hive/hive.dart';
+
+part 'recipe_instructions_model.g.dart';
 
 List<RecipeInstructionsModel> recipeInstructionsModelFromJson(List<dynamic> data) => List<RecipeInstructionsModel>.from(data.map((x) => RecipeInstructionsModel.fromJson(x)));
 
 String recipeInstructionsModelToJson(List<RecipeInstructionsModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+@HiveType(typeId: 5)
 class RecipeInstructionsModel {
+  @HiveField(0)
   String? name;
+  @HiveField(1)
   List<StepModel>? steps;
 
   RecipeInstructionsModel({
@@ -24,11 +30,17 @@ class RecipeInstructionsModel {
   };
 }
 
+@HiveType(typeId: 6)
 class StepModel {
+  @HiveField(0)
   List<Ent>? equipment;
+  @HiveField(1)
   List<Ent>? ingredients;
+  @HiveField(2)
   int? number;
+  @HiveField(3)
   String? step;
+  @HiveField(4)
   Length? length;
 
   StepModel({
@@ -56,10 +68,15 @@ class StepModel {
   };
 }
 
+@HiveType(typeId: 7)
 class Ent {
+  @HiveField(0)
   int? id;
+  @HiveField(1)
   String? image;
+  @HiveField(2)
   String? name;
+  @HiveField(3)
   Length? temperature;
 
   Ent({
@@ -84,8 +101,11 @@ class Ent {
   };
 }
 
+@HiveType(typeId: 8)
 class Length {
+  @HiveField(0)
   int? number;
+  @HiveField(1)
   String? unit;
 
   Length({
