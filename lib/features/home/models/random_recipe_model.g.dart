@@ -32,13 +32,14 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       dishTypes: (fields[12] as List?)?.cast<String>(),
       extendedIngredients: (fields[13] as List?)?.cast<ExtendedIngredients>(),
       summary: fields[14] as String?,
+      sourceUrl: fields[15] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Recipe obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -68,7 +69,9 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       ..writeByte(13)
       ..write(obj.extendedIngredients)
       ..writeByte(14)
-      ..write(obj.summary);
+      ..write(obj.summary)
+      ..writeByte(15)
+      ..write(obj.sourceUrl);
   }
 
   @override

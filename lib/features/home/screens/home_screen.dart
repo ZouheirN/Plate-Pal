@@ -79,17 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const ListTile(
                   title: Text(
                     'Random Recipes',
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'Here are some random recipes for you',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
                     ),
                   ),
                 ),
@@ -124,8 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRandomRecipe(List<Recipe>? recipes) {
+    List recipesWithImages = recipes!.where((element) => element.image != null).toList();
+
     return SizedBox(
-      height: 240,
+      height: 320,
       child: CarouselView(
         onTap: (index) {
           Navigator.of(context).push(
@@ -145,53 +140,122 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(10),
         ),
         children: [
-          for (final recipe in recipes!)
-            if (recipe.image != null)
-              CachedNetworkImage(
-                imageUrl: recipe.image!,
-                imageBuilder: (context, imageProvider) {
-                  return Container(
-                    width: 150,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black,
-                          ],
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8, left: 8, right: 8),
-                            child: Text(
-                              recipe.title!,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                // fontSize: 16,
-                                fontWeight: FontWeight.bold,
+          for (final recipe in recipesWithImages)
+              Card(
+                margin: const EdgeInsets.all(0),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CachedNetworkImage(
+                        imageUrl: recipe.image!,
+                        imageBuilder: (context, imageProvider) {
+                          return Container(
+                            // width: 150,
+                            // height: 250,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
                               ),
-                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ],
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black,
+                                  ],
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        const Spacer(),
+                                        CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          radius: 14,
+                                          child: Icon(
+                                            recipe.cheap!
+                                                ? Icons.monetization_on
+                                                : Icons.money_off,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        bottom: 8, left: 8, right: 8),
+                                    child: Text(
+                                      recipe.title!,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        // fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        if (recipe.dairyFree!)
+                          const Icon(
+                            Icons.local_drink,
+                            size: 16,
+                          ),
+                        if (recipe.glutenFree!)
+                          const Icon(
+                            Icons.local_pizza,
+                            size: 16,
+                          ),
+                        if (recipe.vegan!)
+                          const Icon(
+                            Icons.emoji_food_beverage,
+                            size: 16,
+                          ),
+                        if (recipe.vegetarian!)
+                          const Icon(
+                            Icons.emoji_nature,
+                            size: 16,
+                          ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.access_time),
+                        const Gap(4),
+                        Text('${recipe.readyInMinutes} minutes'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.restaurant),
+                        const Gap(4),
+                        Text('${recipe.servings} servings'),
+                      ],
+                    ),
+                  ],
+                ),
               ),
         ],
       ),

@@ -8,3 +8,15 @@ final class RecipeInstructionFetchEvent extends RecipeEvent {
 
   RecipeInstructionFetchEvent(this.recipeId);
 }
+
+final class RecipeInstructionSuccessEvent extends RecipeEvent {
+  final List<RecipeInstructionsModel> recipeInstructionsModel;
+
+  RecipeInstructionSuccessEvent(this.recipeInstructionsModel);
+}
+
+final class SimilarRecipesFetchEvent extends RecipeEvent {
+  final int recipeId;
+
+  SimilarRecipesFetchEvent(this.recipeId);
+}

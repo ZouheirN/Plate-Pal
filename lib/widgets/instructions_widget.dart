@@ -40,13 +40,16 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
               if (_currentStep > 0)
                 TextButton(
                   onPressed: details.onStepCancel,
-                  child: const Text('Back'),
+                  child: const Text(
+                    'Back',
+                    // style: TextStyle(color: Colors.black),
+                  ),
                 ),
             ],
           ),
         );
       },
-      stepIconSize: 30,
+      // stepIconSize: 30,
       onStepCancel: () {
         if (_currentStep > 0) {
           setState(() {
@@ -70,7 +73,10 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
         for (var i = 0; i < steps.length; i++)
           EnhanceStep(
             isActive: _currentStep == i,
-            title: Text(steps[i].step!),
+            title: Text(
+              steps[i].step!,
+              // style: const TextStyle(color: Colors.white),
+            ),
             content: Column(
               children: [
                 if (steps[i].equipment!.isNotEmpty)
@@ -80,7 +86,10 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Equipment',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            // color: Colors.white,
+                          ),
                         ),
                       ),
                       for (var equipment in steps[i].equipment!)
@@ -88,6 +97,7 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             '• ${equipment.name!}',
+                            // style: const TextStyle(color: Colors.white),
                           ),
                         ),
                     ],
@@ -99,7 +109,10 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Ingredients',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            // color: Colors.white,
+                          ),
                         ),
                       ),
                       for (var ingredient in steps[i].ingredients!)
@@ -107,13 +120,16 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             '• ${ingredient.name!}',
+                            // style: const TextStyle(color: Colors.white),
                           ),
                         ),
                     ],
                   ),
                 if (steps[i].length != null)
                   Text(
-                      'Length: ${steps[i].length!.number} ${steps[i].length!.unit}'),
+                    'Length: ${steps[i].length!.number} ${steps[i].length!.unit}',
+                    // style: const TextStyle(color: Colors.white),
+                  ),
               ],
             ),
           ),

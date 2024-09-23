@@ -22,6 +22,8 @@ dependencies:
   flutter_dotenv: ^5.1.0
   flutter_widget_from_html: ^0.15.2
   enhance_stepper: ^1.0.1
+  draggable_home: ^1.0.5
+  tap_to_expand: ^0.7.2
 
 dev_dependencies:
   flutter_test:

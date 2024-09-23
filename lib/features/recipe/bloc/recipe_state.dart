@@ -18,3 +18,9 @@ final class RecipeInstructionError extends RecipeState {
 
   RecipeInstructionError(this.message);
 }
+
+final class SimilarRecipesSuccess extends RecipeState {
+  final List<SimilarRecipesModel> similarRecipes;
+
+  SimilarRecipesSuccess(this.similarRecipes);
+}

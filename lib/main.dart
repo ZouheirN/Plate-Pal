@@ -26,6 +26,7 @@ Future<void> main() async {
   Hive.registerAdapter(LengthAdapter());
 
   await Hive.openBox('favoritesBox');
+  await Hive.openBox('settingsBox');
 
   runApp(const MyApp());
 }

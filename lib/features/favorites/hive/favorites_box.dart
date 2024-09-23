@@ -4,28 +4,28 @@ import 'package:platepal/features/home/models/random_recipe_model.dart';
 import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
 
 class FavoritesBox {
-  static Box box = Hive.box('favoritesBox');
+  static Box _box = Hive.box('favoritesBox');
 
   static void addFavorite(Recipe recipe, List<RecipeInstructionsModel> recipeInstructions) {
-    box.put(recipe.id, {
+    _box.put(recipe.id, {
       'recipe': recipe,
       'instructions': recipeInstructions,
     });
   }
 
   static void removeFavorite(int recipeId) {
-    box.delete(recipeId);
+    _box.delete(recipeId);
   }
 
-  static bool isFavorite(Recipe recipe) {
-    return box.containsKey(recipe.id);
+  static bool isFavorite(int recipeId) {
+    return _box.containsKey(recipeId);
   }
 
   static List getFavorites() {
-    return box.values.toList();
+    return _box.values.toList();
   }
 
   static ValueListenable<Box> listenable() {
-    return box.listenable();
+    return _box.listenable();
   }
 }

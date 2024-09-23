@@ -48,6 +48,8 @@ class Recipe{
   final List<ExtendedIngredients>? extendedIngredients;
   @HiveField(14)
   final String? summary;
+  @HiveField(15)
+  final String? sourceUrl;
 
   Recipe({
     required this.id,
@@ -65,6 +67,7 @@ class Recipe{
     required this.dishTypes,
     required this.extendedIngredients,
     required this.summary,
+    required this.sourceUrl,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
@@ -84,6 +87,7 @@ class Recipe{
       dishTypes: json['dishTypes'] != null ? List<String>.from(json['dishTypes']) : [],
       extendedIngredients: json['extendedIngredients'] != null ? (json['extendedIngredients'] as List).map((i) => ExtendedIngredients.fromJson(i)).toList() : [],
       summary: json['summary'],
+      sourceUrl: json['sourceUrl'],
     );
   }
 }

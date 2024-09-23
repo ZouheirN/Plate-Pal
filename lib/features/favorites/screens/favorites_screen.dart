@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:platepal/features/favorites/hive/favorites_box.dart';
+import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
 import 'package:platepal/features/recipe/screens/recipe_screen.dart';
-import 'package:platepal/hive/favorites_box.dart';
-import 'package:platepal/main.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -51,6 +51,9 @@ class FavoritesScreen extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => RecipeScreen(
                             recipe: favorite['recipe'],
+                            recipeInstructionsModel:
+                                List<RecipeInstructionsModel>.from(
+                                    favorite['instructions']),
                           ),
                         ),
                       );
