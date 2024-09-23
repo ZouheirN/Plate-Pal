@@ -75,60 +75,71 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
             isActive: _currentStep == i,
             title: Text(
               steps[i].step!,
-              // style: const TextStyle(color: Colors.white),
             ),
             content: Column(
               children: [
                 if (steps[i].equipment!.isNotEmpty)
-                  Column(
-                    children: [
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Equipment',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            // color: Colors.white,
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Equipment',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
+                          const Divider(),
+                          for (var equipment in steps[i].equipment!)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "• ${equipment.name![0].toUpperCase()}${equipment.name!.substring(1)}",
+                              ),
+                            ),
+                        ],
                       ),
-                      for (var equipment in steps[i].equipment!)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            '• ${equipment.name!}',
-                            // style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                    ],
+                    ),
                   ),
                 if (steps[i].ingredients!.isNotEmpty)
-                  Column(
-                    children: [
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Ingredients',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            // color: Colors.white,
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Ingredients',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
+                          const Divider(),
+                          for (var ingredient in steps[i].ingredients!)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "• ${ingredient.name![0].toUpperCase()}${ingredient.name!.substring(1)}",
+                              ),
+                            ),
+                        ],
                       ),
-                      for (var ingredient in steps[i].ingredients!)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            '• ${ingredient.name!}',
-                            // style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                    ],
+                    ),
                   ),
                 if (steps[i].length != null)
-                  Text(
-                    'Length: ${steps[i].length!.number} ${steps[i].length!.unit}',
-                    // style: const TextStyle(color: Colors.white),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Length: ${steps[i].length!.number} ${steps[i].length!.unit}',
+                      ),
+                    ),
                   ),
               ],
             ),

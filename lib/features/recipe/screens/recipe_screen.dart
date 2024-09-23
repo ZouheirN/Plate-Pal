@@ -1,3 +1,4 @@
+import 'package:autoscale_tabbarview/autoscale_tabbarview.dart';
 import 'package:draggable_home/draggable_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,22 +10,29 @@ import 'package:platepal/features/home/models/random_recipe_model.dart';
 import 'package:platepal/features/recipe/bloc/recipe_bloc.dart';
 import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
 import 'package:platepal/widgets/instructions_widget.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tap_to_expand/tap_to_expand.dart';
 
 class RecipeScreen extends StatefulWidget {
   final Recipe recipe;
   final List<RecipeInstructionsModel>? recipeInstructionsModel;
 
-  const RecipeScreen(
-      {super.key, required this.recipe, this.recipeInstructionsModel});
+  const RecipeScreen({
+    super.key,
+    required this.recipe,
+    this.recipeInstructionsModel,
+  });
 
   @override
   State<RecipeScreen> createState() => _RecipeScreenState();
 }
 
-class _RecipeScreenState extends State<RecipeScreen> {
+class _RecipeScreenState extends State<RecipeScreen>
+    with SingleTickerProviderStateMixin {
   final _recipeBloc = RecipeBloc();
   final _similarRecipeBloc = RecipeBloc();
+
+  late TabController _tabController;
 
   @override
   void initState() {
@@ -34,7 +42,10 @@ class _RecipeScreenState extends State<RecipeScreen> {
     } else {
       _recipeBloc.add(RecipeInstructionFetchEvent(widget.recipe.id!));
     }
+
     _similarRecipeBloc.add(SimilarRecipesFetchEvent(widget.recipe.id!));
+
+    _tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
 
@@ -44,8 +55,16 @@ class _RecipeScreenState extends State<RecipeScreen> {
       alwaysShowLeadingAndAction: true,
       title: Text(
         widget.recipe.title!,
+        textAlign: TextAlign.center,
       ),
       actions: [
+        if (widget.recipe.sourceUrl != null)
+          IconButton(
+            onPressed: () {
+              Share.share(widget.recipe.sourceUrl!);
+            },
+            icon: const Icon(Icons.share),
+          ),
         IconButton(
           onPressed: () {
             if (FavoritesBox.isFavorite(widget.recipe.id!)) {
@@ -92,6 +111,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
+          textAlign: TextAlign.center,
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -99,36 +119,211 @@ class _RecipeScreenState extends State<RecipeScreen> {
             widget.recipe.summary!,
           ),
         ),
+        const Gap(16),
+        TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(
+              icon: Icon(Icons.info),
+              text: 'Recipe Information',
+            ),
+            Tab(
+              icon: Icon(Icons.brunch_dining),
+              text: 'Dish Types',
+            ),
+          ],
+        ),
+        AutoScaleTabBarView(
+          controller: _tabController,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.access_time),
+                            title: const Text(
+                              'Required Time',
+                            ),
+                            trailing: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                '${widget.recipe.readyInMinutes} minutes',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.monetization_on,
+                            ),
+                            title: const Text(
+                              'Cheap',
+                            ),
+                            trailing: Icon(
+                              widget.recipe.cheap! ? Icons.check : Icons.close,
+                              color: widget.recipe.cheap!
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.local_drink,
+                            ),
+                            title: const Text(
+                              'Dairy Free',
+                            ),
+                            trailing: Icon(
+                              widget.recipe.dairyFree!
+                                  ? Icons.check
+                                  : Icons.close,
+                              color: widget.recipe.dairyFree!
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.local_pizza,
+                            ),
+                            title: const Text(
+                              'Gluten Free',
+                            ),
+                            trailing: Icon(
+                              widget.recipe.glutenFree!
+                                  ? Icons.check
+                                  : Icons.close,
+                              color: widget.recipe.glutenFree!
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.emoji_food_beverage,
+                            ),
+                            title: const Text(
+                              'Vegan',
+                            ),
+                            trailing: Icon(
+                              widget.recipe.vegan! ? Icons.check : Icons.close,
+                              color: widget.recipe.vegan!
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.emoji_nature,
+                            ),
+                            title: const Text(
+                              'Vegetarian',
+                            ),
+                            trailing: Icon(
+                              widget.recipe.vegetarian!
+                                  ? Icons.check
+                                  : Icons.close,
+                              color: widget.recipe.vegetarian!
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (var dishType in widget.recipe.dishTypes!)
+                            ListTile(
+                              title: Text(
+                                "${dishType[0].toUpperCase()}${dishType.substring(1)}",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const Gap(16),
         TapToExpand(
           duration: const Duration(milliseconds: 300),
-          outerClosedPadding: 8,
-          titlePadding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          titlePadding: const EdgeInsets.only(left: 8, right: 8, bottom: 24),
           content: ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: widget.recipe.extendedIngredients!.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  widget.recipe.extendedIngredients![index].name!,
-                  style: const TextStyle(
-                    color: Colors.white,
+              return Card(
+                color: Colors.white.withOpacity(0.8),
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: ListTile(
+                  title: Text(
+                    "${widget.recipe.extendedIngredients![index].name![0].toUpperCase()}${widget.recipe.extendedIngredients![index].name!.substring(1)}",
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                subtitle: Text(
-                  widget.recipe.extendedIngredients![index].original!,
-                  style: const TextStyle(
-                    color: Colors.grey,
+                  subtitle: Text(
+                    "${widget.recipe.extendedIngredients![index].original![0].toUpperCase()}${widget.recipe.extendedIngredients![index].original!.substring(1)}",
+                    style: const TextStyle(
+                      color: Colors.black54,
+                    ),
                   ),
                 ),
               );
             },
           ),
-          title: const Text(
-            'Ingredients',
-            style: TextStyle(
+          title: Text(
+            'Ingredients (${widget.recipe.extendedIngredients!.length} items)',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -140,17 +335,17 @@ class _RecipeScreenState extends State<RecipeScreen> {
               return const CircularProgressIndicator();
             } else if (state is RecipeInstructionSuccess) {
               return TapToExpand(
+                // spaceBetweenBodyTitle: ,
                 duration: const Duration(milliseconds: 300),
                 backgroundcolor: Colors.white,
                 iconColor: Colors.black,
-                outerClosedPadding: 8,
                 titlePadding:
-                    const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                title: const Text(
-                  'Instructions',
-                  style: TextStyle(
-                    // color: Colors.white,
+                    const EdgeInsets.only(left: 8, right: 8, bottom: 24),
+                title: Text(
+                  'Instructions (${state.recipeInstructionModel.first.steps?.length} steps)',
+                  style: const TextStyle(
                     fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 content: InstructionsWidget(
