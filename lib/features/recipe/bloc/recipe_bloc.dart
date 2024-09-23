@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -31,6 +32,8 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       final result = await Dio().getUri(
         uri,
       );
+
+      log(result.data.toString());
 
       emit(RecipeInstructionSuccess(
           recipeInstructionsModelFromJson(result.data)));

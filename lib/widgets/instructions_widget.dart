@@ -1,3 +1,4 @@
+import 'package:enhance_stepper/enhance_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
 
@@ -17,13 +18,57 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
   Widget build(BuildContext context) {
     final steps = widget.recipeInstructionsModel.first.steps!;
 
-    return Stepper(
+    return EnhanceStepper(
       physics: const NeverScrollableScrollPhysics(),
-      // margin: const EdgeInsets.all(88),
-      margin: const EdgeInsets.only(left: 11111116, right: 16, top: 16),
+      currentStep: _currentStep,
+      controlsBuilder: (context, details) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 24.0),
+          child: Row(
+            children: [
+              if (_currentStep < steps.length - 1)
+                ElevatedButton(
+                  onPressed: details.onStepContinue,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
+                  child: const Text(
+                    'Next',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              if (_currentStep > 0)
+                TextButton(
+                  onPressed: details.onStepCancel,
+                  child: const Text('Back'),
+                ),
+            ],
+          ),
+        );
+      },
+      stepIconSize: 30,
+      onStepCancel: () {
+        if (_currentStep > 0) {
+          setState(() {
+            _currentStep -= 1;
+          });
+        }
+      },
+      onStepContinue: () {
+        if (_currentStep < steps.length - 1) {
+          setState(() {
+            _currentStep += 1;
+          });
+        }
+      },
+      onStepTapped: (step) {
+        setState(() {
+          _currentStep = step;
+        });
+      },
       steps: [
         for (var i = 0; i < steps.length; i++)
-          Step(
+          EnhanceStep(
             isActive: _currentStep == i,
             title: Text(steps[i].step!),
             content: Column(
@@ -73,26 +118,6 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
             ),
           ),
       ],
-      onStepTapped: (step) {
-        setState(() {
-          _currentStep = step;
-        });
-      },
-      onStepContinue: () {
-        setState(() {
-          if (_currentStep < steps.length - 1) {
-            _currentStep += 1;
-          }
-        });
-      },
-      onStepCancel: () {
-        setState(() {
-          if (_currentStep > 0) {
-            _currentStep -= 1;
-          }
-        });
-      },
-      currentStep: _currentStep,
     );
   }
 }

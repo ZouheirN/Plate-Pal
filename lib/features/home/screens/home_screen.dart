@@ -136,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         },
+        shrinkExtent: 0,
         itemExtent: MediaQuery.of(context).size.width * 0.6,
         itemSnapping: false,
         elevation: 4,

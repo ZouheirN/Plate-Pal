@@ -13,7 +13,11 @@ class FavoritesScreen extends StatelessWidget {
       builder: (context, value, child) {
         final favorites = FavoritesBox.getFavorites();
 
-        logger.i(favorites);
+        if (favorites.isEmpty) {
+          return const Center(
+            child: Text('No favorites yet, go add some!'),
+          );
+        }
 
         return Scaffold(
           appBar: AppBar(

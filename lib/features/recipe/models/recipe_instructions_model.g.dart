@@ -57,7 +57,7 @@ class StepModelAdapter extends TypeAdapter<StepModel> {
     return StepModel(
       equipment: (fields[0] as List?)?.cast<Ent>(),
       ingredients: (fields[1] as List?)?.cast<Ent>(),
-      number: fields[2] as int?,
+      number: fields[2] as double?,
       step: fields[3] as String?,
       length: fields[4] as Length?,
     );
@@ -144,7 +144,7 @@ class LengthAdapter extends TypeAdapter<Length> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Length(
-      number: fields[0] as int?,
+      number: fields[0] as double?,
       unit: fields[1] as String?,
     );
   }

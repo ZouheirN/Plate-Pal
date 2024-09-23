@@ -37,7 +37,7 @@ class StepModel {
   @HiveField(1)
   List<Ent>? ingredients;
   @HiveField(2)
-  int? number;
+  double? number;
   @HiveField(3)
   String? step;
   @HiveField(4)
@@ -54,7 +54,7 @@ class StepModel {
   factory StepModel.fromJson(Map<String, dynamic> json) => StepModel(
     equipment: json["equipment"] == null ? [] : List<Ent>.from(json["equipment"]!.map((x) => Ent.fromJson(x))),
     ingredients: json["ingredients"] == null ? [] : List<Ent>.from(json["ingredients"]!.map((x) => Ent.fromJson(x))),
-    number: json["number"],
+    number: json["number"]?.toDouble(),
     step: json["step"],
     length: json["length"] == null ? null : Length.fromJson(json["length"]),
   );
@@ -62,7 +62,7 @@ class StepModel {
   Map<String, dynamic> toJson() => {
     "equipment": equipment == null ? [] : List<dynamic>.from(equipment!.map((x) => x.toJson())),
     "ingredients": ingredients == null ? [] : List<dynamic>.from(ingredients!.map((x) => x.toJson())),
-    "number": number,
+    "number": number?.toDouble(),
     "step": step,
     "length": length?.toJson(),
   };
@@ -104,7 +104,7 @@ class Ent {
 @HiveType(typeId: 8)
 class Length {
   @HiveField(0)
-  int? number;
+  double? number;
   @HiveField(1)
   String? unit;
 
@@ -114,12 +114,12 @@ class Length {
   });
 
   factory Length.fromJson(Map<String, dynamic> json) => Length(
-    number: json["number"],
+    number: json["number"]?.toDouble(),
     unit: json["unit"],
   );
 
   Map<String, dynamic> toJson() => {
-    "number": number,
+    "number": number?.toDouble(),
     "unit": unit,
   };
 }
