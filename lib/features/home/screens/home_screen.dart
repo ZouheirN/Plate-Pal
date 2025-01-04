@@ -77,7 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Gap(20),
                       Hero(
                         tag: 'search',
-                        child: SearchWidget(_searchController, pushReplace: false),
+                        child:
+                            SearchWidget(_searchController, pushReplace: false),
                       ),
                     ],
                   ),
@@ -201,6 +202,29 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () {
             List<String> selectedCuisines = [];
             List<String> selectedDiets = [];
+
+            if (_selectedCuisines.every((element) => element == false) &&
+                _selectedDiets.every((element) => element == false)) {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Error'),
+                    content: const Text('Please select at least one category.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              return;
+            }
 
             for (int i = 0; i < _selectedCuisines.length; i++) {
               if (_selectedCuisines[i]) {

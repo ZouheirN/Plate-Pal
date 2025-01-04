@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:gap/gap.dart';
 import 'package:platepal/main.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
@@ -20,17 +21,99 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            const ListTile(
+              title: Text(
+                'Theme Settings',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             ValueListenableBuilder(
-              valueListenable: SettingsBox.darkModeListenable(),
+              valueListenable: SettingsBox.listenable(),
               builder: (context, box, child) {
-                return SwitchListTile(
-                  title: const Text('Dark mode'),
-                  value: box.get('darkMode', defaultValue: false),
-                  onChanged: (value) {
-                    SettingsBox.setDarkMode(value);
-                  },
+                final isMaterialYou = SettingsBox.useMaterialYou;
+                final isAmoledBlack = SettingsBox.useAmoledBlack;
+
+                return Column(
+                  children: [
+                    AbsorbPointer(
+                      absorbing: isMaterialYou || isAmoledBlack,
+                      child: Opacity(
+                        opacity: isMaterialYou ? 0.5 : 1,
+                        child: ListTile(
+                          title: const Text('Theme Color'),
+                          trailing: CircleAvatar(
+                            backgroundColor: SettingsBox.themeColor,
+                          ),
+                          onTap: () async {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Pick a color!'),
+                                content: SingleChildScrollView(
+                                  child: ColorPicker(
+                                    pickerColor: SettingsBox.themeColor,
+                                    onColorChanged: (color) {
+                                      SettingsBox.themeColor = color;
+                                    },
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  ElevatedButton(
+                                    child: const Text('Got it'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    AbsorbPointer(
+                      absorbing: isAmoledBlack,
+                      child: Opacity(
+                        opacity: isAmoledBlack ? 0.5 : 1,
+                        child: SwitchListTile(
+                          title: const Text('Use Material You'),
+                          value: SettingsBox.useMaterialYou,
+                          onChanged: (value) {
+                            SettingsBox.useMaterialYou = value;
+                          },
+                        ),
+                      ),
+                    ),
+                    AbsorbPointer(
+                      absorbing: isAmoledBlack,
+                      child: Opacity(
+                        opacity: isAmoledBlack ? 0.5 : 1,
+                        child: SwitchListTile(
+                          title: const Text('Dark mode'),
+                          value: SettingsBox.darkMode,
+                          onChanged: (value) {
+                            SettingsBox.darkMode = value;
+                          },
+                        ),
+                      ),
+                    ),
+                    SwitchListTile(
+                      title: const Text('Use AMOLED Black'),
+                      value: SettingsBox.useAmoledBlack,
+                      onChanged: (value) {
+                        SettingsBox.useAmoledBlack = value;
+                      },
+                    ),
+                  ],
                 );
               },
+            ),
+            const Divider(
+              endIndent: 15,
+              indent: 15,
             ),
             ListTile(
               title: const Text('Check for updates'),
