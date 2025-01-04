@@ -20,3 +20,9 @@ final class SimilarRecipesFetchEvent extends RecipeEvent {
 
   SimilarRecipesFetchEvent(this.recipeId);
 }
+
+final class RecipeInformationFetchEvent extends RecipeEvent {
+  final int recipeId;
+
+  RecipeInformationFetchEvent(this.recipeId);
+}

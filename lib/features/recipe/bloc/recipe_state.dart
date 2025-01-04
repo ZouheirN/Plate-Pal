@@ -24,3 +24,9 @@ final class SimilarRecipesSuccess extends RecipeState {
 
   SimilarRecipesSuccess(this.similarRecipes);
 }
+
+final class RecipeInformationSuccess extends RecipeState {
+  final Recipe recipe;
+
+  RecipeInformationSuccess(this.recipe);
+}

@@ -298,7 +298,7 @@ class _RecipeScreenState extends State<RecipeScreen>
             itemCount: widget.recipe.extendedIngredients!.length,
             itemBuilder: (context, index) {
               return Card(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
                 margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 child: ListTile(
                   title: Text(

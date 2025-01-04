@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:platepal/features/home/bloc/recipes_home_bloc.dart';
 import 'package:platepal/features/home/models/random_recipe_model.dart';
 import 'package:platepal/features/recipe/screens/recipe_screen.dart';
+import 'package:platepal/features/search/screens/search_screen.dart';
 import 'package:platepal/utilities/constants.dart';
 import 'package:platepal/widgets/search_widget.dart';
 
@@ -17,6 +18,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  final List<bool> _selectedCuisines =
+      List.generate(cuisines.length, (index) => false);
+  final List<bool> _selectedDiets =
+      List.generate(diets.length, (index) => false);
 
   @override
   void dispose() {
@@ -69,7 +75,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const Gap(20),
-                      SearchWidget(_searchController),
+                      Hero(
+                        tag: 'search',
+                        child: SearchWidget(_searchController),
+                      ),
                     ],
                   ),
                 ),
@@ -112,6 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             _buildCategories(),
+            const Gap(20),
           ],
         ),
       ),
@@ -140,10 +150,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           subtitle: Wrap(
+            runAlignment: WrapAlignment.start,
+            runSpacing: 8,
+            spacing: 8,
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
             children: [
               for (final cuisine in cuisines)
-                Chip(
+                ChoiceChip(
                   label: Text(cuisine['name']!),
+                  selected: _selectedCuisines[cuisines.indexOf(cuisine)],
+                  onSelected: (value) {
+                    setState(() {
+                      _selectedCuisines[cuisines.indexOf(cuisine)] = value;
+                    });
+                  },
                 ),
             ],
           ),
@@ -157,12 +178,58 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           subtitle: Wrap(
+            runAlignment: WrapAlignment.start,
+            runSpacing: 8,
+            spacing: 8,
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
             children: [
               for (final diet in diets)
-                Chip(
+                ChoiceChip(
                   label: Text(diet['name']!),
+                  selected: _selectedDiets[diets.indexOf(diet)],
+                  onSelected: (value) {
+                    setState(() {
+                      _selectedDiets[diets.indexOf(diet)] = value;
+                    });
+                  },
                 ),
             ],
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            List<String> selectedCuisines = [];
+            List<String> selectedDiets = [];
+
+            for (int i = 0; i < _selectedCuisines.length; i++) {
+              if (_selectedCuisines[i]) {
+                selectedCuisines.add(cuisines[i]['name']!);
+              }
+            }
+
+            for (int i = 0; i < _selectedDiets.length; i++) {
+              if (_selectedDiets[i]) {
+                selectedDiets.add(diets[i]['name']!);
+              }
+            }
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchScreen(
+                  cuisines: selectedCuisines,
+                  diets: selectedDiets,
+                ),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+          child: const Text(
+            'Search with categories',
+            style: TextStyle(color: Colors.white),
           ),
         ),
       ],
