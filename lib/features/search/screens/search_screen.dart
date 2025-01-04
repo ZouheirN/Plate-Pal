@@ -56,7 +56,10 @@ class _SearchScreenState extends State<SearchScreen> {
             if (widget.searchController != null) ...[
               Hero(
                 tag: 'search',
-                child: SearchWidget(widget.searchController!),
+                child: SearchWidget(
+                  widget.searchController!,
+                  pushReplace: true,
+                ),
               ),
               const Gap(20),
             ],
@@ -79,7 +82,12 @@ class _SearchScreenState extends State<SearchScreen> {
                         final recipe = state.searchRecipeModel.results?[index];
 
                         return ListTile(
-                          leading: CachedNetworkImage(imageUrl: recipe!.image!),
+                          leading: CachedNetworkImage(
+                            imageUrl: recipe!.image!,
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          ),
                           title: Text(recipe.title!),
                           trailing: const Icon(Icons.arrow_forward_ios),
                           onTap: () {

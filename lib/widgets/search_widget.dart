@@ -3,8 +3,13 @@ import 'package:platepal/features/search/screens/search_screen.dart';
 
 class SearchWidget extends StatelessWidget {
   final TextEditingController searchController;
+  final bool pushReplace;
 
-  const SearchWidget(this.searchController, {super.key});
+  const SearchWidget(
+    this.searchController, {
+    super.key,
+    required this.pushReplace,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +31,21 @@ class SearchWidget extends StatelessWidget {
             ),
             onSubmitted: (value) {
               if (value.isNotEmpty) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SearchScreen(searchController: searchController),
-                  ),
-                );
+                if (pushReplace) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          SearchScreen(searchController: searchController),
+                    ),
+                  );
+                } else {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          SearchScreen(searchController: searchController),
+                    ),
+                  );
+                }
               }
             },
           ),

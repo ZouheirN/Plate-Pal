@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Gap(20),
                       Hero(
                         tag: 'search',
-                        child: SearchWidget(_searchController),
+                        child: SearchWidget(_searchController, pushReplace: false),
                       ),
                     ],
                   ),

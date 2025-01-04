@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class SettingsBox {
@@ -5,5 +6,9 @@ class SettingsBox {
 
   static void setDarkMode(bool value) {
     box.put('darkMode', value);
+  }
+
+  static ValueListenable<Box> darkModeListenable() {
+    return box.listenable(keys: ['darkMode']);
   }
 }

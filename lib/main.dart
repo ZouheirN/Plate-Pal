@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:platepal/features/home/bloc/recipes_home_bloc.dart';
 import 'package:platepal/features/home/models/random_recipe_model.dart';
 import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
+import 'package:platepal/features/settings/hive/settings_box.dart';
 import 'package:platepal/main_wrapper.dart';
 
 final logger = Logger();
@@ -38,12 +39,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => RecipesHomeBloc(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-        ),
-        home: const MainWrapper(),
+      child: ValueListenableBuilder(
+        valueListenable: SettingsBox.darkModeListenable(),
+        builder: (context, box, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+            ),
+            darkTheme: ThemeData.dark(),
+            themeMode: box.get('darkMode', defaultValue: false)
+                ? ThemeMode.dark
+                : ThemeMode.light,
+            home: const MainWrapper(),
+          );
+        }
       ),
     );
   }
