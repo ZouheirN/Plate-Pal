@@ -39,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 return Column(
                   children: [
                     AbsorbPointer(
-                      absorbing: isMaterialYou || isAmoledBlack,
+                      absorbing: isMaterialYou,
                       child: Opacity(
                         opacity: isMaterialYou ? 0.5 : 1,
                         child: ListTile(
@@ -74,18 +74,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                     ),
-                    AbsorbPointer(
-                      absorbing: isAmoledBlack,
-                      child: Opacity(
-                        opacity: isAmoledBlack ? 0.5 : 1,
-                        child: SwitchListTile(
-                          title: const Text('Use Material You'),
-                          value: SettingsBox.useMaterialYou,
-                          onChanged: (value) {
-                            SettingsBox.useMaterialYou = value;
-                          },
-                        ),
-                      ),
+                    SwitchListTile(
+                      title: const Text('Use Material You'),
+                      value: SettingsBox.useMaterialYou,
+                      onChanged: (value) {
+                        SettingsBox.useMaterialYou = value;
+                      },
                     ),
                     AbsorbPointer(
                       absorbing: isAmoledBlack,
@@ -105,6 +99,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       value: SettingsBox.useAmoledBlack,
                       onChanged: (value) {
                         SettingsBox.useAmoledBlack = value;
+                        if (value) {
+                          SettingsBox.darkMode = true;
+                        }
                       },
                     ),
                   ],
@@ -132,8 +129,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     case UpdateStatus.restartRequired:
                       _showRestartBanner();
                     case UpdateStatus.unavailable:
-                    // Do nothing, there is already a warning displayed at the top of the
-                    // screen.
                   }
                 } catch (error) {
                   logger.e('Error checking for update: $error');
@@ -247,16 +242,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _downloadUpdate() async {
     _showDownloadingBanner();
     try {
-      // Perform the update (e.g download the latest patch on [_currentTrack]).
-      // Note that [track] is optional. Not passing it will default to the
-      // stable track.
       await updater.update();
-      if (!mounted) return;
-      // Show a banner to inform the user that the update is ready and that they
-      // need to restart the app.
       _showRestartBanner();
     } on UpdateException catch (error) {
-      // If an error occurs, we show a banner with the error message.
       _showErrorBanner(error.message);
     }
   }
