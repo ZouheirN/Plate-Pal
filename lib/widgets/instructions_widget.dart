@@ -75,6 +75,9 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
             isActive: _currentStep == i,
             title: Text(
               steps[i].step!,
+              style: TextStyle(
+                color: _currentStep == i ? Colors.black : Colors.grey,
+              ),
             ),
             content: Column(
               children: [
@@ -136,8 +139,21 @@ class _InstructionsWidgetState extends State<InstructionsWidget> {
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Length: ${steps[i].length!.number} ${steps[i].length!.unit}',
+                      child: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            const TextSpan(
+                              text: 'Length: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text:
+                                  '${steps[i].length!.number} ${steps[i].length!.unit}',
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

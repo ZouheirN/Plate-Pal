@@ -44,9 +44,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         opacity: isMaterialYou ? 0.5 : 1,
                         child: ListTile(
                           title: const Text('Theme Color'),
+                          subtitle: const Text('Tap to change, hold to reset to default'),
                           trailing: CircleAvatar(
                             backgroundColor: SettingsBox.themeColor,
                           ),
+                          onLongPress: () {
+                            SettingsBox.themeColor = Colors.red;
+                          },
                           onTap: () async {
                             showDialog(
                               context: context,

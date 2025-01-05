@@ -24,8 +24,10 @@ class SearchWidget extends StatelessWidget {
           ),
           child: TextField(
             controller: searchController,
+            style: const TextStyle(color: Colors.black),
             decoration: const InputDecoration(
               hintText: 'Search for recipes',
+              hintStyle: TextStyle(color: Colors.grey),
               border: InputBorder.none,
               icon: Icon(Icons.search),
             ),

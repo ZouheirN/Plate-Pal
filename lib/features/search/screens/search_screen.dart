@@ -28,6 +28,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final _recipesSearchBloc = RecipesSearchBloc();
   final _recipeBloc = RecipeBloc();
 
+  bool isLoading = false;
+
   @override
   void initState() {
     if (widget.searchController == null) {
@@ -54,12 +56,24 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           children: [
             if (widget.searchController != null) ...[
-              Hero(
-                tag: 'search',
-                child: SearchWidget(
-                  widget.searchController!,
-                  pushReplace: true,
-                ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                  Expanded(
+                    child: Hero(
+                      tag: 'search',
+                      child: SearchWidget(
+                        widget.searchController!,
+                        pushReplace: true,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const Gap(20),
             ],
@@ -91,6 +105,12 @@ class _SearchScreenState extends State<SearchScreen> {
                           title: Text(recipe.title!),
                           trailing: const Icon(Icons.arrow_forward_ios),
                           onTap: () {
+                            if (isLoading) {
+                              return;
+                            }
+
+                            isLoading = true;
+
                             _recipeBloc
                                 .add(RecipeInformationFetchEvent(recipe.id!));
                           },
@@ -107,6 +127,8 @@ class _SearchScreenState extends State<SearchScreen> {
               bloc: _recipeBloc,
               listener: (context, state) {
                 if (state is RecipeInformationSuccess) {
+                  isLoading = false;
+
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => RecipeScreen(
@@ -116,7 +138,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   );
                 }
               },
-              child: const SizedBox(),
+              child: const SizedBox.shrink(),
             ),
           ],
         ),

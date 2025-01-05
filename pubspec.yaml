@@ -20,7 +20,7 @@ dependencies:
   gap: ^3.0.1
   cached_network_image: ^3.4.1
   flutter_dotenv: ^5.1.0
-  flutter_widget_from_html: ^0.15.2
+  flutter_widget_from_html: ^0.15.3
   enhance_stepper: ^1.0.1
   draggable_home: ^1.0.5
   tap_to_expand: ^0.7.2
@@ -29,6 +29,7 @@ dependencies:
   shorebird_code_push: ^2.0.2
   dynamic_color: ^1.7.0
   flutter_colorpicker: ^1.1.0
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

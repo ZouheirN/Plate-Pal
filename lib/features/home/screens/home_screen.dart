@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
             runAlignment: WrapAlignment.start,
             runSpacing: 8,
             spacing: 8,
-            alignment: WrapAlignment.start,
+            alignment: WrapAlignment.spaceEvenly,
             crossAxisAlignment: WrapCrossAlignment.start,
             children: [
               for (final cuisine in cuisines)
@@ -182,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
             runAlignment: WrapAlignment.start,
             runSpacing: 8,
             spacing: 8,
-            alignment: WrapAlignment.start,
+            alignment: WrapAlignment.spaceEvenly,
             crossAxisAlignment: WrapCrossAlignment.start,
             children: [
               for (final diet in diets)

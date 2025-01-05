@@ -9,9 +9,11 @@ import 'package:platepal/features/favorites/hive/favorites_box.dart';
 import 'package:platepal/features/home/models/random_recipe_model.dart';
 import 'package:platepal/features/recipe/bloc/recipe_bloc.dart';
 import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
+import 'package:platepal/main.dart';
 import 'package:platepal/widgets/instructions_widget.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tap_to_expand/tap_to_expand.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class RecipeScreen extends StatefulWidget {
   final Recipe recipe;
@@ -31,6 +33,9 @@ class _RecipeScreenState extends State<RecipeScreen>
     with SingleTickerProviderStateMixin {
   final _recipeBloc = RecipeBloc();
   final _similarRecipeBloc = RecipeBloc();
+  final _similarRecipeBlocClick = RecipeBloc();
+
+  bool isLoading = false;
 
   late TabController _tabController;
 
@@ -117,6 +122,11 @@ class _RecipeScreenState extends State<RecipeScreen>
           padding: const EdgeInsets.all(8.0),
           child: HtmlWidget(
             widget.recipe.summary!,
+            onTapUrl: (url) {
+              launchUrlString(url);
+
+              return true;
+            },
           ),
         ),
         const Gap(16),
@@ -334,8 +344,17 @@ class _RecipeScreenState extends State<RecipeScreen>
             if (state is RecipeInstructionLoading) {
               return const CircularProgressIndicator();
             } else if (state is RecipeInstructionSuccess) {
+              if (state.recipeInstructionModel.isEmpty) {
+                return const Text(
+                  'No instructions found',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              }
+
               return TapToExpand(
-                // spaceBetweenBodyTitle: ,
                 duration: const Duration(milliseconds: 300),
                 backgroundcolor: Colors.white,
                 iconColor: Colors.black,
@@ -346,6 +365,7 @@ class _RecipeScreenState extends State<RecipeScreen>
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
                 content: InstructionsWidget(
@@ -401,6 +421,16 @@ class _RecipeScreenState extends State<RecipeScreen>
                             ),
                           ],
                         ),
+                        onTap: () {
+                          if (isLoading) {
+                            return;
+                          }
+
+                          isLoading = true;
+
+                          _similarRecipeBlocClick
+                              .add(RecipeInformationFetchEvent(recipe.id!));
+                        },
                       ),
                     ),
                 ],
@@ -410,6 +440,23 @@ class _RecipeScreenState extends State<RecipeScreen>
             }
           },
         ),
+        BlocListener(
+          bloc: _similarRecipeBlocClick,
+          listener: (context, state) {
+            if (state is RecipeInformationSuccess) {
+              isLoading = false;
+
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => RecipeScreen(
+                    recipe: state.recipe,
+                  ),
+                ),
+              );
+            }
+          },
+          child: const SizedBox.shrink(),
+        )
       ],
     );
   }
