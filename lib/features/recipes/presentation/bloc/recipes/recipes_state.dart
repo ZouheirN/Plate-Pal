@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
 import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
+import 'package:platepal/features/recipes/domain/entities/search_recipe.dart';
 import 'package:platepal/features/recipes/domain/entities/similar_recipes.dart';
 
 abstract class RecipesState extends Equatable {
@@ -9,6 +10,7 @@ abstract class RecipesState extends Equatable {
   final List<RecipeInstructionsEntity>? recipeInstructions;
   final List<SimilarRecipesEntity>? similarRecipes;
   final RecipeEntity? recipe;
+  final SearchRecipeEntity? searchRecipe;
   final DioException? error;
 
   const RecipesState({
@@ -16,12 +18,13 @@ abstract class RecipesState extends Equatable {
     this.recipeInstructions,
     this.similarRecipes,
     this.recipe,
+    this.searchRecipe,
     this.error,
   });
 
   @override
   List<Object?> get props =>
-      [randomRecipes, recipeInstructions, similarRecipes, recipe, error];
+      [randomRecipes, recipeInstructions, similarRecipes, recipe, searchRecipe, error];
 }
 
 class RecipesLoading extends RecipesState {
@@ -65,5 +68,15 @@ class RecipeInformationDone extends RecipesState {
 
 class RecipeInformationError extends RecipesState {
   const RecipeInformationError({required DioException error})
+      : super(error: error);
+}
+
+class SearchRecipesDone extends RecipesState {
+  const SearchRecipesDone({required SearchRecipeEntity searchRecipe})
+      : super(searchRecipe: searchRecipe);
+}
+
+class SearchRecipesError extends RecipesState {
+  const SearchRecipesError({required DioException error})
       : super(error: error);
 }

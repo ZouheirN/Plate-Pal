@@ -228,7 +228,7 @@ class _HomeState extends State<Home> {
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
           child: const Text(
-            'Search with categories',
+            'Search by categories',
             style: TextStyle(color: Colors.white),
           ),
         ),

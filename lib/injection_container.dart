@@ -7,6 +7,8 @@ import 'package:platepal/features/recipes/domain/usecases/get_random_recipes.dar
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_information.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_instructions.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_similar_recipes.dart';
+import 'package:platepal/features/recipes/domain/usecases/search_recipes.dart';
+import 'package:platepal/features/recipes/domain/usecases/search_recipes_by_categories.dart';
 
 import 'features/recipes/presentation/bloc/recipes/recipes_bloc.dart';
 
@@ -36,7 +38,22 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton(
     GetRecipeInformationUseCase(sl()),
   );
+  sl.registerSingleton(
+    SearchRecipesUseCase(sl()),
+  );
+  sl.registerSingleton(
+    SearchRecipesByCategoriesUseCase(sl()),
+  );
 
   // BLoCs
-  sl.registerFactory<RecipesBloc>(() => RecipesBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory<RecipesBloc>(
+    () => RecipesBloc(
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+    ),
+  );
 }

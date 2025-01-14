@@ -31,3 +31,16 @@ class GetRecipeInformation extends RecipesEvent {
 
   const GetRecipeInformation({required this.recipeId});
 }
+
+class SearchRecipes extends RecipesEvent {
+  final String query;
+
+  const SearchRecipes({required this.query});
+}
+
+class SearchRecipesByCategories extends RecipesEvent {
+  final List<String> cuisines;
+  final List<String> diets;
+
+  SearchRecipesByCategories(this.cuisines, this.diets);
+}

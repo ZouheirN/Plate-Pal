@@ -5,7 +5,6 @@ import 'package:gap/gap.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_event.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_state.dart';
 import 'package:platepal/features/recipes/presentation/pages/recipe_details.dart';
-import 'package:platepal/features/search/bloc/recipes_search_bloc.dart';
 import 'package:platepal/features/recipes/presentation/widgets/search_widget.dart';
 
 import '../../../../injection_container.dart';
@@ -28,7 +27,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final _recipesSearchBloc = RecipesSearchBloc();
+  final _recipesSearchBloc = sl<RecipesBloc>();
   final _recipeBloc = sl<RecipesBloc>();
 
   bool isLoading = false;
@@ -36,13 +35,13 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     if (widget.searchController == null) {
-      _recipesSearchBloc.add(RecipesSearchByCategoriesFetchEvent(
+      _recipesSearchBloc.add(SearchRecipesByCategories(
         widget.cuisines ?? [],
         widget.diets ?? [],
       ));
     } else {
       _recipesSearchBloc
-          .add(RecipesSearchFetchEvent(widget.searchController!.text.trim()));
+          .add(SearchRecipes(query: widget.searchController!.text.trim()));
     }
     super.initState();
   }
@@ -80,23 +79,23 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               const Gap(20),
             ],
-            BlocBuilder<RecipesSearchBloc, RecipesSearchState>(
+            BlocBuilder<RecipesBloc, RecipesState>(
               bloc: _recipesSearchBloc,
               builder: (context, state) {
-                if (state is RecipesSearchLoading) {
+                if (state is RecipesLoading) {
                   return const Center(child: CircularProgressIndicator());
-                } else if (state is RecipesSearchError) {
-                  return Center(child: Text(state.message));
-                } else if (state is RecipesSearchSuccess) {
-                  if (state.searchRecipeModel.results?.isEmpty ?? true) {
+                } else if (state is SearchRecipesError) {
+                  return Center(child: Text(state.error.toString()));
+                } else if (state is SearchRecipesDone) {
+                  if (state.searchRecipe!.results?.isEmpty ?? true) {
                     return const Center(child: Text('No results found'));
                   }
 
                   return Expanded(
                     child: ListView.builder(
-                      itemCount: state.searchRecipeModel.results?.length,
+                      itemCount: state.searchRecipe!.results?.length,
                       itemBuilder: (context, index) {
-                        final recipe = state.searchRecipeModel.results?[index];
+                        final recipe = state.searchRecipe!.results?[index];
 
                         return ListTile(
                           leading: CachedNetworkImage(

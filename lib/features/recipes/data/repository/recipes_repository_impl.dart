@@ -7,9 +7,10 @@ import 'package:platepal/features/recipes/data/data_sources/remote/recipes_api_s
 import 'package:platepal/features/recipes/data/models/random_recipes.dart';
 import 'package:platepal/features/recipes/data/models/recipe_instructions.dart';
 import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
+import 'package:platepal/features/recipes/domain/entities/search_recipe.dart';
 import 'package:platepal/features/recipes/domain/entities/similar_recipes.dart';
 import 'package:platepal/features/recipes/domain/repository/recipes_repository.dart';
-
+import 'package:platepal/main.dart';
 
 class RecipesRepositoryImpl implements RecipesRepository {
   final RecipesApiService _recipesApiService;
@@ -104,6 +105,63 @@ class RecipesRepositoryImpl implements RecipesRepository {
       final httpResponse = await _recipesApiService.getRecipeInformation(
         id: recipeId,
         apiKey: apiKey,
+      );
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<SearchRecipeEntity>> searchRecipes(
+      {required String query}) async {
+    try {
+      final httpResponse = await _recipesApiService.searchRecipes(
+        apiKey: apiKey,
+        query: query,
+        includeNutrition: 'false',
+      );
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<SearchRecipeEntity>> searchRecipesByCategories({
+    required String cuisines,
+    required String diets,
+  }) async {
+    try {
+      final httpResponse = await _recipesApiService.searchRecipesByCategories(
+        apiKey: apiKey,
+        includeNutrition: 'false',
+        cuisine: cuisines,
+        diet: diets,
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
