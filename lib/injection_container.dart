@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:platepal/features/home/data/data_sources/remote/recipes_api_service.dart';
-import 'package:platepal/features/home/data/repository/random_recipes_repository.dart';
-import 'package:platepal/features/home/domain/repository/random_recipes_repository.dart';
-import 'package:platepal/features/home/domain/usecases/get_random_recipes.dart';
-import 'package:platepal/features/home/domain/usecases/get_recipe_instructions.dart';
-import 'package:platepal/features/home/presentation/bloc/random_recipes/random_recipes_bloc.dart';
+import 'package:platepal/features/recipes/data/data_sources/remote/recipes_api_service.dart';
+import 'package:platepal/features/recipes/data/repository/recipes_repository_impl.dart';
+import 'package:platepal/features/recipes/domain/repository/recipes_repository.dart';
+import 'package:platepal/features/recipes/domain/usecases/get_random_recipes.dart';
+import 'package:platepal/features/recipes/domain/usecases/get_recipe_information.dart';
+import 'package:platepal/features/recipes/domain/usecases/get_recipe_instructions.dart';
+import 'package:platepal/features/recipes/domain/usecases/get_similar_recipes.dart';
+
+import 'features/recipes/presentation/bloc/recipes/recipes_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -27,7 +30,13 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetRecipeInstructionsUseCase>(
     GetRecipeInstructionsUseCase(sl()),
   );
+  sl.registerSingleton<GetSimilarRecipesUseCase>(
+    GetSimilarRecipesUseCase(sl()),
+  );
+  sl.registerSingleton(
+    GetRecipeInformationUseCase(sl()),
+  );
 
   // BLoCs
-  sl.registerFactory<RandomRecipesBloc>(() => RandomRecipesBloc(sl()));
+  sl.registerFactory<RecipesBloc>(() => RecipesBloc(sl(), sl(), sl(), sl()));
 }

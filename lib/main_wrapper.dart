@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:platepal/features/favorites/screens/favorites_screen.dart';
-import 'package:platepal/features/home/presentation/pages/home.dart';
+import 'package:platepal/features/recipes/presentation/pages/home.dart';
 import 'package:platepal/features/settings/screens/settings_screen.dart';
 
 class MainWrapper extends StatefulWidget {

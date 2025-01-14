@@ -1,19 +1,17 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
+import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
 
-import '../../home/data/models/random_recipes.dart';
-import '../../home/data/models/recipe_instructions.dart';
 
 class FavoritesBox {
   static final Box _box = Hive.box('favoritesBox');
 
   static void addFavorite(
-      RecipeModel recipe, List<RecipeInstructionsModel> recipeInstructions) {
+      RecipeEntity recipe, List<RecipeInstructionsEntity> recipeInstructions) {
     _box.put(recipe.id, {
-      'recipe': recipe.toJson(),
-      'instructions': recipeInstructionsModelToJson(recipeInstructions),
+      'recipe': recipe,
+      'instructions': recipeInstructions,
     });
   }
 
@@ -26,18 +24,7 @@ class FavoritesBox {
   }
 
   static List getFavorites() {
-    List<Map> favorites = [];
-
-    for (var key in _box.keys) {
-      favorites.add({
-        'recipe': RecipeModel.fromJson(
-            Map<String, dynamic>.from(_box.get(key)['recipe'])),
-        'instructions': recipeInstructionsModelFromJson(
-            jsonDecode(_box.get(key)['instructions'])),
-      });
-    }
-
-    return favorites;
+    return _box.values.toList();
   }
 
   static ValueListenable<Box> listenable() {
