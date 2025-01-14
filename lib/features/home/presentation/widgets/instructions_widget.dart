@@ -1,6 +1,7 @@
 import 'package:enhance_stepper/enhance_stepper.dart';
 import 'package:flutter/material.dart';
-import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
+
+import '../../data/models/recipe_instructions.dart';
 
 class InstructionsWidget extends StatefulWidget {
   final List<RecipeInstructionsModel> recipeInstructionsModel;

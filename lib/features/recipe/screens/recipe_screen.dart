@@ -6,17 +6,17 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
 import 'package:hive/hive.dart';
 import 'package:platepal/features/favorites/hive/favorites_box.dart';
-import 'package:platepal/features/home/models/random_recipe_model.dart';
+import 'package:platepal/features/home/data/models/random_recipes.dart';
 import 'package:platepal/features/recipe/bloc/recipe_bloc.dart';
-import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
-import 'package:platepal/main.dart';
-import 'package:platepal/widgets/instructions_widget.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tap_to_expand/tap_to_expand.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../home/data/models/recipe_instructions.dart';
+import '../../home/presentation/widgets/instructions_widget.dart';
+
 class RecipeScreen extends StatefulWidget {
-  final Recipe recipe;
+  final RecipeModel recipe;
   final List<RecipeInstructionsModel>? recipeInstructionsModel;
 
   const RecipeScreen({
@@ -94,10 +94,18 @@ class _RecipeScreenState extends State<RecipeScreen>
           icon: ValueListenableBuilder(
             valueListenable: FavoritesBox.listenable(),
             builder: (context, Box box, child) {
+              double opacity = 1;
+
+              if (_recipeBloc.state is RecipeInstructionLoading) {
+                opacity = 0.5;
+              }
+
               if (FavoritesBox.isFavorite(widget.recipe.id!)) {
-                return const Icon(Icons.favorite);
+                return Opacity(
+                    opacity: opacity, child: const Icon(Icons.favorite));
               } else {
-                return const Icon(Icons.favorite_border);
+                return Opacity(
+                    opacity: opacity, child: const Icon(Icons.favorite_border));
               }
             },
           ),

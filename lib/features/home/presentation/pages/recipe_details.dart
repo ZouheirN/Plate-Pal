@@ -1,0 +1,468 @@
+import 'package:draggable_home/draggable_home.dart';
+import 'package:flutter/material.dart';
+import 'package:platepal/features/favorites/hive/favorites_box.dart';
+import 'package:platepal/injection_container.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../data/models/random_recipes.dart';
+import '../../data/models/recipe_instructions.dart';
+
+class RecipeDetails extends StatefulWidget {
+  final RecipeModel recipeModel;
+  final List<RecipeInstructionsModel>? recipeInstructionsModel;
+
+  const RecipeDetails({
+    super.key,
+    required this.recipeModel,
+    this.recipeInstructionsModel,
+  });
+
+  @override
+  State<RecipeDetails> createState() => _RecipeDetailsState();
+}
+
+class _RecipeDetailsState extends State<RecipeDetails>
+    with SingleTickerProviderStateMixin {
+  bool isLoading = false;
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    if (widget.recipeInstructionsModel != null) {
+      _recipeBloc
+          .add(RecipeInstructionSuccessEvent(widget.recipeInstructionsModel!));
+    } else {
+      _recipeBloc.add(RecipeInstructionFetchEvent(widget.recipe.id!));
+    }
+
+    _similarRecipeBloc.add(SimilarRecipesFetchEvent(widget.recipe.id!));
+
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>  sl<GetMovieCreditsCubit>()..getMovieCredits(movieDetail?.id ?? 0),
+      child: DraggableHome(
+        alwaysShowLeadingAndAction: true,
+        title: Text(
+          widget.recipeModel.title!,
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          if (widget.recipeModel.sourceUrl != null)
+            IconButton(
+              onPressed: () {
+                Share.share(widget.recipeModel.sourceUrl!);
+              },
+              icon: const Icon(Icons.share),
+            ),
+          IconButton(
+            onPressed: () {
+              if (FavoritesBox.isFavorite(widget.recipeModel.id!)) {
+                FavoritesBox.removeFavorite(widget.recipeModel.id!);
+              } else {
+                if (widget.recipeInstructionsModel == null) {
+                  final instructions =
+                      _recipeBloc.state as RecipeInstructionSuccess;
+
+                  FavoritesBox.addFavorite(
+                    widget.recipe,
+                    instructions.recipeInstructionModel,
+                  );
+                } else {
+                  FavoritesBox.addFavorite(
+                    widget.recipe,
+                    widget.recipeInstructionsModel!,
+                  );
+                }
+              }
+            },
+            icon: ValueListenableBuilder(
+              valueListenable: FavoritesBox.listenable(),
+              builder: (context, Box box, child) {
+                double opacity = 1;
+
+                if (_recipeBloc.state is RecipeInstructionLoading) {
+                  opacity = 0.5;
+                }
+
+                if (FavoritesBox.isFavorite(widget.recipe.id!)) {
+                  return Opacity(
+                      opacity: opacity, child: const Icon(Icons.favorite));
+                } else {
+                  return Opacity(
+                      opacity: opacity,
+                      child: const Icon(Icons.favorite_border));
+                }
+              },
+            ),
+          ),
+        ],
+        headerWidget: Image.network(
+          widget.recipe.image!,
+          fit: BoxFit.cover,
+          height: 200,
+          width: double.infinity,
+        ),
+        body: [
+          Text(
+            widget.recipe.title!,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: HtmlWidget(
+              widget.recipe.summary!,
+              onTapUrl: (url) {
+                launchUrlString(url);
+
+                return true;
+              },
+            ),
+          ),
+          const Gap(16),
+          TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(
+                icon: Icon(Icons.info),
+                text: 'Recipe Information',
+              ),
+              Tab(
+                icon: Icon(Icons.brunch_dining),
+                text: 'Dish Types',
+              ),
+            ],
+          ),
+          AutoScaleTabBarView(
+            controller: _tabController,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.access_time),
+                              title: const Text(
+                                'Required Time',
+                              ),
+                              trailing: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  '${widget.recipe.readyInMinutes} minutes',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.monetization_on,
+                              ),
+                              title: const Text(
+                                'Cheap',
+                              ),
+                              trailing: Icon(
+                                widget.recipe.cheap!
+                                    ? Icons.check
+                                    : Icons.close,
+                                color: widget.recipe.cheap!
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.local_drink,
+                              ),
+                              title: const Text(
+                                'Dairy Free',
+                              ),
+                              trailing: Icon(
+                                widget.recipe.dairyFree!
+                                    ? Icons.check
+                                    : Icons.close,
+                                color: widget.recipe.dairyFree!
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.local_pizza,
+                              ),
+                              title: const Text(
+                                'Gluten Free',
+                              ),
+                              trailing: Icon(
+                                widget.recipe.glutenFree!
+                                    ? Icons.check
+                                    : Icons.close,
+                                color: widget.recipe.glutenFree!
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.emoji_food_beverage,
+                              ),
+                              title: const Text(
+                                'Vegan',
+                              ),
+                              trailing: Icon(
+                                widget.recipe.vegan!
+                                    ? Icons.check
+                                    : Icons.close,
+                                color: widget.recipe.vegan!
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.emoji_nature,
+                              ),
+                              title: const Text(
+                                'Vegetarian',
+                              ),
+                              trailing: Icon(
+                                widget.recipe.vegetarian!
+                                    ? Icons.check
+                                    : Icons.close,
+                                color: widget.recipe.vegetarian!
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (var dishType in widget.recipe.dishTypes!)
+                              ListTile(
+                                title: Text(
+                                  "${dishType[0].toUpperCase()}${dishType.substring(1)}",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Gap(16),
+          TapToExpand(
+            duration: const Duration(milliseconds: 300),
+            titlePadding: const EdgeInsets.only(left: 8, right: 8, bottom: 24),
+            content: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: widget.recipe.extendedIngredients!.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  child: ListTile(
+                    title: Text(
+                      "${widget.recipe.extendedIngredients![index].name![0].toUpperCase()}${widget.recipe.extendedIngredients![index].name!.substring(1)}",
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "${widget.recipe.extendedIngredients![index].original![0].toUpperCase()}${widget.recipe.extendedIngredients![index].original!.substring(1)}",
+                      style: const TextStyle(
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            title: Text(
+              'Ingredients (${widget.recipe.extendedIngredients!.length} items)',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const Gap(16),
+          BlocBuilder<RecipeBloc, RecipeState>(
+            bloc: _recipeBloc,
+            builder: (context, state) {
+              if (state is RecipeInstructionLoading) {
+                return const CircularProgressIndicator();
+              } else if (state is RecipeInstructionSuccess) {
+                if (state.recipeInstructionModel.isEmpty) {
+                  return const Text(
+                    'No instructions found',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }
+
+                return TapToExpand(
+                  duration: const Duration(milliseconds: 300),
+                  backgroundcolor: Colors.white,
+                  iconColor: Colors.black,
+                  titlePadding:
+                      const EdgeInsets.only(left: 8, right: 8, bottom: 24),
+                  title: Text(
+                    'Instructions (${state.recipeInstructionModel.first.steps?.length} steps)',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  content: InstructionsWidget(
+                      recipeInstructionsModel: state.recipeInstructionModel),
+                );
+              } else if (state is RecipeInstructionError) {
+                return Text(state.message.toString());
+              } else {
+                return const SizedBox();
+              }
+            },
+          ),
+          const Gap(16),
+          BlocBuilder<RecipeBloc, RecipeState>(
+            bloc: _similarRecipeBloc,
+            builder: (context, state) {
+              if (state is SimilarRecipesSuccess) {
+                return ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(8),
+                  children: [
+                    const Text(
+                      'Also check out these recipes',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Gap(8),
+                    for (var recipe in state.similarRecipes)
+                      Card(
+                        child: ListTile(
+                          title: Text(recipe.title!),
+                          subtitle: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.access_time),
+                                  const Gap(4),
+                                  Text('${recipe.readyInMinutes} minutes'),
+                                ],
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.restaurant),
+                                  const Gap(4),
+                                  Text('${recipe.servings} servings'),
+                                ],
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            if (isLoading) {
+                              return;
+                            }
+
+                            isLoading = true;
+
+                            _similarRecipeBlocClick
+                                .add(RecipeInformationFetchEvent(recipe.id!));
+                          },
+                        ),
+                      ),
+                  ],
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
+          ),
+          BlocListener(
+            bloc: _similarRecipeBlocClick,
+            listener: (context, state) {
+              if (state is RecipeInformationSuccess) {
+                isLoading = false;
+
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => RecipeScreen(
+                      recipe: state.recipe,
+                    ),
+                  ),
+                );
+              }
+            },
+            child: const SizedBox.shrink(),
+          )
+        ],
+      ),
+    );
+  }
+}

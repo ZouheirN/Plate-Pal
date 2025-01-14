@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
-import 'package:platepal/features/home/bloc/recipes_home_bloc.dart';
-import 'package:platepal/features/home/models/random_recipe_model.dart';
-import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
+import 'package:platepal/features/home/presentation/bloc/random_recipes/random_recipes_bloc.dart';
+import 'package:platepal/features/home/presentation/bloc/random_recipes/random_recipes_event.dart';
 import 'package:platepal/features/settings/hive/settings_box.dart';
+import 'package:platepal/injection_container.dart';
 import 'package:platepal/main_wrapper.dart';
 
 final logger = Logger();
@@ -15,17 +15,9 @@ final logger = Logger();
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
 
-  await Hive.initFlutter();
+  await initializeDependencies();
 
-  Hive.registerAdapter(RecipeAdapter());
-  Hive.registerAdapter(ExtendedIngredientsAdapter());
-  Hive.registerAdapter(MeasuresAdapter());
-  Hive.registerAdapter(MetricAdapter());
-  Hive.registerAdapter(UsAdapter());
-  Hive.registerAdapter(RecipeInstructionsModelAdapter());
-  Hive.registerAdapter(StepModelAdapter());
-  Hive.registerAdapter(EntAdapter());
-  Hive.registerAdapter(LengthAdapter());
+  await Hive.initFlutter();
 
   await Hive.openBox('favoritesBox');
   await Hive.openBox('settingsBox');
@@ -38,10 +30,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MaterialColor _primarySwatch = Colors.red;
-
-    return BlocProvider(
-      create: (context) => RecipesHomeBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<RandomRecipesBloc>(
+          create: (context) => sl()..add(const GetRandomRecipes()),
+        ),
+      ],
       child: ValueListenableBuilder(
         valueListenable: SettingsBox.listenable(),
         builder: (context, box, child) {
@@ -64,8 +58,9 @@ class MyApp extends StatelessWidget {
 
               // set the background and surface colors to pure black in the amoled theme
               if (SettingsBox.useAmoledBlack) {
-                darkColorScheme =
-                    darkColorScheme.copyWith(surface: Colors.black).harmonized();
+                darkColorScheme = darkColorScheme
+                    .copyWith(surface: Colors.black)
+                    .harmonized();
               }
 
               return MaterialApp(
@@ -79,16 +74,6 @@ class MyApp extends StatelessWidget {
                   useMaterial3: true,
                   colorScheme: darkColorScheme,
                 ),
-                // theme: ThemeData(
-                //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-                // ),
-                // darkTheme: ThemeData.dark().copyWith(
-                //   brightness: Brightness.dark,
-                //   colorScheme: ColorScheme.fromSeed(
-                //     brightness: Brightness.dark,
-                //     seedColor: Colors.red,
-                //   ),
-                // ),
                 themeMode:
                     SettingsBox.darkMode ? ThemeMode.dark : ThemeMode.light,
                 home: const MainWrapper(),

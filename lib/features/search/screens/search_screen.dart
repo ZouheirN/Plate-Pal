@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:platepal/features/recipe/bloc/recipe_bloc.dart';
 import 'package:platepal/features/search/bloc/recipes_search_bloc.dart';
-import 'package:platepal/widgets/search_widget.dart';
+import 'package:platepal/features/home/presentation/widgets/search_widget.dart';
 
 import '../../recipe/screens/recipe_screen.dart';
 

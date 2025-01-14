@@ -4,10 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:meta/meta.dart';
-import 'package:platepal/features/home/models/random_recipe_model.dart';
-import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
 import 'package:platepal/features/recipe/models/similar_recipes_model.dart';
 import 'package:platepal/main.dart';
+
+import '../../home/data/models/random_recipes.dart';
+import '../../home/data/models/recipe_instructions.dart';
 
 part 'recipe_event.dart';
 part 'recipe_state.dart';
@@ -86,7 +87,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         uri,
       );
 
-      emit(RecipeInformationSuccess(Recipe.fromJson(result.data)));
+      emit(RecipeInformationSuccess(RecipeModel.fromJson(result.data)));
     } catch (e) {
       logger.e(e);
     }

@@ -26,7 +26,7 @@ final class SimilarRecipesSuccess extends RecipeState {
 }
 
 final class RecipeInformationSuccess extends RecipeState {
-  final Recipe recipe;
+  final RecipeModel recipe;
 
   RecipeInformationSuccess(this.recipe);
 }

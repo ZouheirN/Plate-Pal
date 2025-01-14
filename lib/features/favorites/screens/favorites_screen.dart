@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:platepal/features/favorites/hive/favorites_box.dart';
-import 'package:platepal/features/recipe/models/recipe_instructions_model.dart';
 import 'package:platepal/features/recipe/screens/recipe_screen.dart';
+
+import '../../home/data/models/recipe_instructions.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
