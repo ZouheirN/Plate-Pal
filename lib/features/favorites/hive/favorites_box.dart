@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
 import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
-
 
 class FavoritesBox {
   static final Box _box = Hive.box('favoritesBox');

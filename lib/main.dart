@@ -2,14 +2,13 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
-import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
-import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
 import 'package:platepal/features/settings/hive/settings_box.dart';
 import 'package:platepal/injection_container.dart';
 import 'package:platepal/main_wrapper.dart';
 import 'features/recipes/presentation/bloc/recipes/recipes_bloc.dart';
+import 'package:platepal/config/hive/hive_registrar.g.dart';
 
 final logger = Logger();
 
@@ -20,17 +19,7 @@ Future<void> main() async {
 
   await Hive.initFlutter();
 
-  Hive.registerAdapter<RecipeInstructionsEntity>(
-      RecipeInstructionsEntityAdapter());
-  Hive.registerAdapter<ExtendedIngredientsEntity>(
-      ExtendedIngredientsEntityAdapter());
-  Hive.registerAdapter<MeasuresEntity>(MeasuresEntityAdapter());
-  Hive.registerAdapter<MetricEntity>(MetricEntityAdapter());
-  Hive.registerAdapter<UsEntity>(UsEntityAdapter());
-  Hive.registerAdapter<StepEntity>(StepEntityAdapter());
-  Hive.registerAdapter<EntEntity>(EntEntityAdapter());
-  Hive.registerAdapter<LengthEntity>(LengthEntityAdapter());
-  Hive.registerAdapter<RecipeEntity>(RecipeEntityAdapter());
+  Hive.registerAdapters();
 
   await Hive.openBox('favoritesBox');
   await Hive.openBox('settingsBox');

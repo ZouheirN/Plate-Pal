@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'random_recipes.dart';
+part of 'hive_adapters.dart';
 
 // **************************************************************************
-// TypeAdapterGenerator
+// AdaptersGenerator
 // **************************************************************************
 
 class RecipeEntityAdapter extends TypeAdapter<RecipeEntity> {
   @override
-  final int typeId = 5;
+  final int typeId = 0;
 
   @override
   RecipeEntity read(BinaryReader reader) {
@@ -17,13 +17,13 @@ class RecipeEntityAdapter extends TypeAdapter<RecipeEntity> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return RecipeEntity(
-      id: fields[0] as int?,
+      id: (fields[0] as num?)?.toInt(),
       title: fields[1] as String?,
       image: fields[2] as String?,
-      servings: fields[3] as int?,
-      readyInMinutes: fields[4] as int?,
-      cookingMinutes: fields[5] as int?,
-      preparationMinutes: fields[6] as int?,
+      servings: (fields[3] as num?)?.toInt(),
+      readyInMinutes: (fields[4] as num?)?.toInt(),
+      cookingMinutes: (fields[5] as num?)?.toInt(),
+      preparationMinutes: (fields[6] as num?)?.toInt(),
       cheap: fields[7] as bool?,
       dairyFree: fields[8] as bool?,
       glutenFree: fields[9] as bool?,
@@ -89,7 +89,7 @@ class RecipeEntityAdapter extends TypeAdapter<RecipeEntity> {
 class ExtendedIngredientsEntityAdapter
     extends TypeAdapter<ExtendedIngredientsEntity> {
   @override
-  final int typeId = 6;
+  final int typeId = 1;
 
   @override
   ExtendedIngredientsEntity read(BinaryReader reader) {
@@ -99,7 +99,7 @@ class ExtendedIngredientsEntityAdapter
     };
     return ExtendedIngredientsEntity(
       aisle: fields[0] as String?,
-      amount: fields[1] as double?,
+      amount: (fields[1] as num?)?.toDouble(),
       consistency: fields[2] as String?,
       image: fields[3] as String?,
       measures: fields[4] as MeasuresEntity?,
@@ -150,7 +150,7 @@ class ExtendedIngredientsEntityAdapter
 
 class MeasuresEntityAdapter extends TypeAdapter<MeasuresEntity> {
   @override
-  final int typeId = 7;
+  final int typeId = 2;
 
   @override
   MeasuresEntity read(BinaryReader reader) {
@@ -187,7 +187,7 @@ class MeasuresEntityAdapter extends TypeAdapter<MeasuresEntity> {
 
 class MetricEntityAdapter extends TypeAdapter<MetricEntity> {
   @override
-  final int typeId = 8;
+  final int typeId = 3;
 
   @override
   MetricEntity read(BinaryReader reader) {
@@ -196,7 +196,7 @@ class MetricEntityAdapter extends TypeAdapter<MetricEntity> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return MetricEntity(
-      amount: fields[0] as double?,
+      amount: (fields[0] as num?)?.toDouble(),
       unitShort: fields[1] as String?,
       unitLong: fields[2] as String?,
     );
@@ -227,7 +227,7 @@ class MetricEntityAdapter extends TypeAdapter<MetricEntity> {
 
 class UsEntityAdapter extends TypeAdapter<UsEntity> {
   @override
-  final int typeId = 9;
+  final int typeId = 4;
 
   @override
   UsEntity read(BinaryReader reader) {
@@ -236,7 +236,7 @@ class UsEntityAdapter extends TypeAdapter<UsEntity> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return UsEntity(
-      amount: fields[0] as double?,
+      amount: (fields[0] as num?)?.toDouble(),
       unitShort: fields[1] as String?,
       unitLong: fields[2] as String?,
     );
@@ -261,6 +261,170 @@ class UsEntityAdapter extends TypeAdapter<UsEntity> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is UsEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class RecipeInstructionsEntityAdapter
+    extends TypeAdapter<RecipeInstructionsEntity> {
+  @override
+  final int typeId = 5;
+
+  @override
+  RecipeInstructionsEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return RecipeInstructionsEntity(
+      name: fields[0] as String?,
+      steps: (fields[1] as List?)?.cast<StepEntity>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, RecipeInstructionsEntity obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.steps);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RecipeInstructionsEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class StepEntityAdapter extends TypeAdapter<StepEntity> {
+  @override
+  final int typeId = 6;
+
+  @override
+  StepEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return StepEntity(
+      equipment: (fields[0] as List?)?.cast<EntEntity>(),
+      ingredients: (fields[1] as List?)?.cast<EntEntity>(),
+      number: fields[2] as num?,
+      step: fields[3] as String?,
+      length: fields[4] as LengthEntity?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, StepEntity obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.equipment)
+      ..writeByte(1)
+      ..write(obj.ingredients)
+      ..writeByte(2)
+      ..write(obj.number)
+      ..writeByte(3)
+      ..write(obj.step)
+      ..writeByte(4)
+      ..write(obj.length);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is StepEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class EntEntityAdapter extends TypeAdapter<EntEntity> {
+  @override
+  final int typeId = 7;
+
+  @override
+  EntEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return EntEntity(
+      id: (fields[0] as num?)?.toInt(),
+      image: fields[1] as String?,
+      name: fields[2] as String?,
+      temperature: fields[3] as LengthEntity?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, EntEntity obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.image)
+      ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
+      ..write(obj.temperature);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EntEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class LengthEntityAdapter extends TypeAdapter<LengthEntity> {
+  @override
+  final int typeId = 8;
+
+  @override
+  LengthEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return LengthEntity(
+      number: fields[0] as num?,
+      unit: fields[1] as String?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, LengthEntity obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.number)
+      ..writeByte(1)
+      ..write(obj.unit);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LengthEntityAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

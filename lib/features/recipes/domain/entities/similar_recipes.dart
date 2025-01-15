@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-class SimilarRecipesEntity extends Equatable {
+class SimilarRecipesEntity {
   final int? id;
   final String? title;
   final String? imageType;
@@ -16,14 +14,4 @@ class SimilarRecipesEntity extends Equatable {
     this.servings,
     this.sourceUrl,
   });
-
-  @override
-  List<Object?> get props => [
-    id,
-    title,
-    imageType,
-    readyInMinutes,
-    servings,
-    sourceUrl,
-  ];
 }

@@ -11,7 +11,7 @@ String recipeInstructionsModelToJson(List<RecipeInstructionsModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class RecipeInstructionsModel extends RecipeInstructionsEntity {
-  const RecipeInstructionsModel({
+  RecipeInstructionsModel({
     super.name,
     super.steps,
   });
@@ -37,7 +37,7 @@ class RecipeInstructionsModel extends RecipeInstructionsEntity {
 }
 
 class StepModel extends StepEntity {
-  const StepModel({
+  StepModel({
     super.equipment,
     super.ingredients,
     super.number,
@@ -81,7 +81,7 @@ class StepModel extends StepEntity {
 }
 
 class EntModel extends EntEntity {
-  const EntModel({
+  EntModel({
     super.id,
     super.image,
     super.name,
@@ -110,7 +110,7 @@ class EntModel extends EntEntity {
 }
 
 class LengthModel extends LengthEntity {
-  const LengthModel({
+  LengthModel({
     super.number,
     super.unit,
   });

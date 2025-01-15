@@ -5,7 +5,7 @@ import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
 import 'package:platepal/features/recipes/presentation/pages/recipe_details.dart';
 import 'package:platepal/features/recipes/presentation/widgets/random_recipe_card.dart';
 import 'package:platepal/features/recipes/presentation/pages/search_screen.dart';
-import 'package:platepal/utilities/constants.dart';
+import 'package:platepal/core/constants/constants.dart';
 import 'package:platepal/features/recipes/presentation/widgets/search_widget.dart';
 
 import '../bloc/recipes/recipes_bloc.dart';
@@ -238,14 +238,21 @@ class _HomeState extends State<Home> {
 
   _buildBody() {
     return BlocBuilder<RecipesBloc, RecipesState>(
-      bloc: BlocProvider.of<RecipesBloc>(context)..add(const GetRandomRecipes()),
+      bloc: context.read<RecipesBloc>()..add(const GetRandomRecipes()),
       builder: (context, state) {
         if (state is RecipesLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
         if (state is RandomRecipesError) {
-          return const Center(child: Icon(Icons.refresh));
+          return Center(
+            child: IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                context.read<RecipesBloc>().add(const GetRandomRecipes());
+              },
+            ),
+          );
         }
 
         if (state is RandomRecipesDone) {

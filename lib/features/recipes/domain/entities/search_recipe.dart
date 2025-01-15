@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-class SearchRecipeEntity extends Equatable {
+class SearchRecipeEntity {
   final int? offset;
   final int? number;
   final List<ResultEntity>? results;
@@ -12,12 +10,9 @@ class SearchRecipeEntity extends Equatable {
     this.results,
     this.totalResults,
   });
-
-  @override
-  List<Object?> get props => [offset, number, results, totalResults];
 }
 
-class ResultEntity extends Equatable {
+class ResultEntity {
   final int? id;
   final String? title;
   final String? image;
@@ -27,7 +22,4 @@ class ResultEntity extends Equatable {
     this.title,
     this.image,
   });
-
-  @override
-  List<Object?> get props => [id, title, image];
 }

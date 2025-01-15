@@ -38,6 +38,8 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     GetRandomRecipes event,
     Emitter<RecipesState> emit,
   ) async {
+    emit(const RecipesLoading());
+
     final dataState = await _getRandomRecipesUseCase();
 
     if (dataState is DataSuccess && dataState.data != null) {
@@ -51,6 +53,8 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     GetRecipeInstructions event,
     Emitter<RecipesState> emit,
   ) async {
+    emit(const RecipesLoading());
+
     final dataState =
         await _getRecipeInstructionsUseCase(params: event.recipeId);
 
@@ -73,6 +77,8 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     GetSimilarRecipes event,
     Emitter<RecipesState> emit,
   ) async {
+    emit(const RecipesLoading());
+
     final dataState = await _getSimilarRecipesUseCase(params: event.recipeId);
 
     if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
@@ -86,6 +92,8 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     GetRecipeInformation event,
     Emitter<RecipesState> emit,
   ) async {
+    emit(const RecipesLoading());
+
     final dataState =
         await _getRecipeInformationUseCase(params: event.recipeId);
 
@@ -100,6 +108,8 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     SearchRecipes event,
     Emitter<RecipesState> emit,
   ) async {
+    emit(const RecipesLoading());
+
     final dataState = await _searchRecipesUseCase(params: event.query);
 
     if (dataState is DataSuccess && dataState.data != null) {
@@ -113,6 +123,8 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     SearchRecipesByCategories event,
     Emitter<RecipesState> emit,
   ) async {
+    emit(const RecipesLoading());
+
     final cuisines = event.cuisines.isNotEmpty ? event.cuisines.join(',') : '';
     final diets = event.diets.isNotEmpty ? event.diets.join(',') : '';
 

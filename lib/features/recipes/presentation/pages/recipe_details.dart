@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:platepal/features/favorites/hive/favorites_box.dart';
 import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
 import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';

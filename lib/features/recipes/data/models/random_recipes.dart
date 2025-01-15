@@ -25,7 +25,7 @@ class RandomRecipesModel extends RandomRecipesEntity {
 }
 
 class RecipeModel extends RecipeEntity {
-  const RecipeModel({
+  RecipeModel({
     super.id,
     super.title,
     super.image,
@@ -97,7 +97,7 @@ class RecipeModel extends RecipeEntity {
 }
 
 class ExtendedIngredientsModel extends ExtendedIngredientsEntity {
-  const ExtendedIngredientsModel({
+  ExtendedIngredientsModel({
     super.aisle,
     super.amount,
     super.consistency,
@@ -144,7 +144,7 @@ class ExtendedIngredientsModel extends ExtendedIngredientsEntity {
 }
 
 class MeasuresModel extends MeasuresEntity {
-  const MeasuresModel({
+  MeasuresModel({
     super.metric,
     super.us,
   });
@@ -168,7 +168,7 @@ class MeasuresModel extends MeasuresEntity {
 }
 
 class MetricModel extends MetricEntity {
-  const MetricModel({
+  MetricModel({
     super.amount,
     super.unitShort,
     super.unitLong,
@@ -192,7 +192,7 @@ class MetricModel extends MetricEntity {
 }
 
 class UsModel extends UsEntity {
-  const UsModel({
+  UsModel({
     super.amount,
     super.unitShort,
     super.unitLong,

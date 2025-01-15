@@ -1,11 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
 import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
 import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
 import 'package:platepal/features/recipes/domain/entities/search_recipe.dart';
 import 'package:platepal/features/recipes/domain/entities/similar_recipes.dart';
 
-abstract class RecipesState extends Equatable {
+abstract class RecipesState   {
   final RandomRecipesEntity? randomRecipes;
   final List<RecipeInstructionsEntity>? recipeInstructions;
   final List<SimilarRecipesEntity>? similarRecipes;
@@ -21,10 +20,6 @@ abstract class RecipesState extends Equatable {
     this.searchRecipe,
     this.error,
   });
-
-  @override
-  List<Object?> get props =>
-      [randomRecipes, recipeInstructions, similarRecipes, recipe, searchRecipe, error];
 }
 
 class RecipesLoading extends RecipesState {
