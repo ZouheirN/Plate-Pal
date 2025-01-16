@@ -12,8 +12,12 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(LengthEntityAdapter());
     registerAdapter(MeasuresEntityAdapter());
     registerAdapter(MetricEntityAdapter());
+    registerAdapter(RandomRecipesEntityAdapter());
     registerAdapter(RecipeEntityAdapter());
     registerAdapter(RecipeInstructionsEntityAdapter());
+    registerAdapter(ResultEntityAdapter());
+    registerAdapter(SearchRecipeEntityAdapter());
+    registerAdapter(SimilarRecipesEntityAdapter());
     registerAdapter(StepEntityAdapter());
     registerAdapter(UsEntityAdapter());
   }

@@ -1,7 +1,7 @@
 import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
 
 class RandomRecipesModel extends RandomRecipesEntity {
-  const RandomRecipesModel({
+  RandomRecipesModel({
     super.recipes,
   });
 
@@ -13,14 +13,6 @@ class RandomRecipesModel extends RandomRecipesEntity {
               .toList()
           : null,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    List<RecipeModel>? recipes = this.recipes as List<RecipeModel>?;
-
-    return {
-      'recipes': recipes?.map((e) => e.toJson()).toList(),
-    };
   }
 }
 
@@ -69,31 +61,6 @@ class RecipeModel extends RecipeEntity {
       sourceUrl: json['sourceUrl'],
     );
   }
-
-  Map<String, dynamic> toJson() {
-    List<ExtendedIngredientsModel> extendedIngredients =
-        this.extendedIngredients as List<ExtendedIngredientsModel>;
-
-    return {
-      'id': id,
-      'title': title,
-      'image': image,
-      'servings': servings,
-      'readyInMinutes': readyInMinutes,
-      'cookingMinutes': cookingMinutes,
-      'preparationMinutes': preparationMinutes,
-      'cheap': cheap,
-      'dairyFree': dairyFree,
-      'glutenFree': glutenFree,
-      'vegan': vegan,
-      'vegetarian': vegetarian,
-      'dishTypes': dishTypes,
-      'extendedIngredients':
-          extendedIngredients.map((e) => e.toJson()).toList(),
-      'summary': summary,
-      'sourceUrl': sourceUrl,
-    };
-  }
 }
 
 class ExtendedIngredientsModel extends ExtendedIngredientsEntity {
@@ -124,23 +91,6 @@ class ExtendedIngredientsModel extends ExtendedIngredientsEntity {
       unit: json['unit'],
     );
   }
-
-  Map<String, dynamic> toJson() {
-    MeasuresModel measures = this.measures as MeasuresModel;
-
-    return {
-      'aisle': aisle,
-      'amount': amount,
-      'consistency': consistency,
-      'image': image,
-      'measures': measures.toJson(),
-      'meta': meta,
-      'name': name,
-      'original': original,
-      'originalName': originalName,
-      'unit': unit,
-    };
-  }
 }
 
 class MeasuresModel extends MeasuresEntity {
@@ -154,16 +104,6 @@ class MeasuresModel extends MeasuresEntity {
       metric: MetricModel.fromJson(Map<String, dynamic>.from(json['metric'])),
       us: UsModel.fromJson(Map<String, dynamic>.from(json['us'])),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    MetricModel metric = this.metric as MetricModel;
-    UsModel? us = this.us as UsModel?;
-
-    return {
-      'metric': metric.toJson(),
-      'us': us?.toJson(),
-    };
   }
 }
 
@@ -181,14 +121,6 @@ class MetricModel extends MetricEntity {
       unitLong: json['unitLong'],
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'amount': amount,
-      'unitShort': unitShort,
-      'unitLong': unitLong,
-    };
-  }
 }
 
 class UsModel extends UsEntity {
@@ -204,13 +136,5 @@ class UsModel extends UsEntity {
       unitShort: json['unitShort'],
       unitLong: json['unitLong'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'amount': amount,
-      'unitShort': unitShort,
-      'unitLong': unitLong,
-    };
   }
 }

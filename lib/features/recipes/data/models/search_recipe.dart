@@ -1,7 +1,7 @@
 import 'package:platepal/features/recipes/domain/entities/search_recipe.dart';
 
 class SearchRecipeModel extends SearchRecipeEntity {
-  const SearchRecipeModel({
+   SearchRecipeModel({
     super.number,
     super.offset,
     super.results,
@@ -18,23 +18,10 @@ class SearchRecipeModel extends SearchRecipeEntity {
                 json["results"]!.map((x) => ResultModel.fromJson(x))),
         totalResults: json["totalResults"],
       );
-
-  Map<String, dynamic> toJson() {
-    final List<ResultModel>? results = this.results as List<ResultModel>?;
-
-    return {
-      "offset": offset,
-      "number": number,
-      "results": results == null
-          ? []
-          : List<dynamic>.from(results.map((x) => x.toJson())),
-      "totalResults": totalResults,
-    };
-  }
 }
 
 class ResultModel extends ResultEntity {
-  const ResultModel({
+   ResultModel({
     super.id,
     super.image,
     super.title,
@@ -46,9 +33,4 @@ class ResultModel extends ResultEntity {
         image: json["image"],
       );
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": title,
-        "image": image,
-      };
 }

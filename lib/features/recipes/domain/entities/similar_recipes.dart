@@ -1,4 +1,6 @@
-class SimilarRecipesEntity {
+import 'package:hive_ce/hive.dart';
+
+class SimilarRecipesEntity extends HiveObject {
   final int? id;
   final String? title;
   final String? imageType;
@@ -6,7 +8,7 @@ class SimilarRecipesEntity {
   final int? servings;
   final String? sourceUrl;
 
-  const SimilarRecipesEntity({
+  SimilarRecipesEntity({
     this.id,
     this.title,
     this.imageType,

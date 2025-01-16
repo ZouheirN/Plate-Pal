@@ -1,9 +1,9 @@
 import 'package:hive_ce/hive.dart';
 
-class RandomRecipesEntity {
+class RandomRecipesEntity extends HiveObject {
   final List<RecipeEntity>? recipes;
 
-  const RandomRecipesEntity({
+  RandomRecipesEntity({
     this.recipes,
   });
 }

@@ -428,3 +428,169 @@ class LengthEntityAdapter extends TypeAdapter<LengthEntity> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class RandomRecipesEntityAdapter extends TypeAdapter<RandomRecipesEntity> {
+  @override
+  final int typeId = 9;
+
+  @override
+  RandomRecipesEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return RandomRecipesEntity(
+      recipes: (fields[0] as List?)?.cast<RecipeEntity>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, RandomRecipesEntity obj) {
+    writer
+      ..writeByte(1)
+      ..writeByte(0)
+      ..write(obj.recipes);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RandomRecipesEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SearchRecipeEntityAdapter extends TypeAdapter<SearchRecipeEntity> {
+  @override
+  final int typeId = 10;
+
+  @override
+  SearchRecipeEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SearchRecipeEntity(
+      offset: (fields[0] as num?)?.toInt(),
+      number: (fields[1] as num?)?.toInt(),
+      results: (fields[2] as List?)?.cast<ResultEntity>(),
+      totalResults: (fields[3] as num?)?.toInt(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SearchRecipeEntity obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.offset)
+      ..writeByte(1)
+      ..write(obj.number)
+      ..writeByte(2)
+      ..write(obj.results)
+      ..writeByte(3)
+      ..write(obj.totalResults);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SearchRecipeEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class ResultEntityAdapter extends TypeAdapter<ResultEntity> {
+  @override
+  final int typeId = 11;
+
+  @override
+  ResultEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ResultEntity(
+      id: (fields[0] as num?)?.toInt(),
+      title: fields[1] as String?,
+      image: fields[2] as String?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ResultEntity obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.image);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ResultEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SimilarRecipesEntityAdapter extends TypeAdapter<SimilarRecipesEntity> {
+  @override
+  final int typeId = 12;
+
+  @override
+  SimilarRecipesEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SimilarRecipesEntity(
+      id: (fields[0] as num?)?.toInt(),
+      title: fields[1] as String?,
+      imageType: fields[2] as String?,
+      readyInMinutes: (fields[3] as num?)?.toInt(),
+      servings: (fields[4] as num?)?.toInt(),
+      sourceUrl: fields[5] as String?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SimilarRecipesEntity obj) {
+    writer
+      ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.imageType)
+      ..writeByte(3)
+      ..write(obj.readyInMinutes)
+      ..writeByte(4)
+      ..write(obj.servings)
+      ..writeByte(5)
+      ..write(obj.sourceUrl);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SimilarRecipesEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

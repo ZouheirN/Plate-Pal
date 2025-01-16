@@ -13,16 +13,19 @@ import 'package:platepal/config/hive/hive_registrar.g.dart';
 final logger = Logger();
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await dotenv.load(fileName: ".env");
 
-  await initializeDependencies();
-
+  // Hive
   await Hive.initFlutter();
-
   Hive.registerAdapters();
-
   await Hive.openBox('favoritesBox');
   await Hive.openBox('settingsBox');
+  await Hive.openBox('cacheBox');
+
+  // get_it setup
+  await initializeDependencies();
 
   runApp(const MyApp());
 }

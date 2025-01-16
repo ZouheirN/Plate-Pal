@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:platepal/features/favorites/hive/favorites_box.dart';
 import 'package:platepal/features/recipes/data/models/recipe_instructions.dart';
+import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
 import 'package:platepal/features/recipes/presentation/pages/recipe_details.dart';
 
 
@@ -53,7 +54,7 @@ class FavoritesScreen extends StatelessWidget {
                           builder: (context) => RecipeDetails(
                             recipeEntity: favorite['recipe'],
                             recipeInstructionsEntity:
-                                List<RecipeInstructionsModel>.from(
+                                List<RecipeInstructionsEntity>.from(
                                     favorite['instructions']),
                           ),
                         ),

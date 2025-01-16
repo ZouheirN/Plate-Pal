@@ -28,6 +28,12 @@ class _HomeState extends State<Home> {
       List.generate(diets.length, (index) => false);
 
   @override
+  void initState() {
+    context.read<RecipesBloc>().add(const GetRandomRecipes());
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -238,7 +244,7 @@ class _HomeState extends State<Home> {
 
   _buildBody() {
     return BlocBuilder<RecipesBloc, RecipesState>(
-      bloc: context.read<RecipesBloc>()..add(const GetRandomRecipes()),
+      bloc: context.read<RecipesBloc>(),
       builder: (context, state) {
         if (state is RecipesLoading) {
           return const Center(child: CircularProgressIndicator());

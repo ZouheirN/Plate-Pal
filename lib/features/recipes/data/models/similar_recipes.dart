@@ -1,7 +1,7 @@
 import 'package:platepal/features/recipes/domain/entities/similar_recipes.dart';
 
 class SimilarRecipesModel extends SimilarRecipesEntity {
-  const SimilarRecipesModel({
+  SimilarRecipesModel({
     super.id,
     super.title,
     super.imageType,
