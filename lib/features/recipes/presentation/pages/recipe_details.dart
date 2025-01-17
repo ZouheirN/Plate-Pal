@@ -1,4 +1,5 @@
 import 'package:autoscale_tabbarview/autoscale_tabbarview.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:draggable_home/draggable_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,7 +71,9 @@ class _RecipeDetailsState extends State<RecipeDetails>
         if (widget.recipeEntity.sourceUrl != null)
           IconButton(
             onPressed: () {
-              Share.share(widget.recipeEntity.sourceUrl!);
+              Share.share(
+                'Check out this recipe I found on PlatePal: ${widget.recipeEntity.sourceUrl}',
+              );
             },
             icon: const Icon(Icons.share),
           ),
@@ -125,11 +128,29 @@ class _RecipeDetailsState extends State<RecipeDetails>
           ),
         ),
       ],
-      headerWidget: Image.network(
-        widget.recipeEntity.image!,
+      headerWidget: CachedNetworkImage(
+        imageUrl: widget.recipeEntity.image!,
         fit: BoxFit.cover,
         height: 200,
         width: double.infinity,
+        errorWidget: (context, url, error) {
+          return const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.error),
+              Gap(8),
+              Text('Error loading image'),
+            ],
+          );
+        },
+        progressIndicatorBuilder: (context, url, progress) {
+          return Center(
+            child: CircularProgressIndicator(
+              value: progress.progress,
+            ),
+          );
+        },
       ),
       body: [
         Text(

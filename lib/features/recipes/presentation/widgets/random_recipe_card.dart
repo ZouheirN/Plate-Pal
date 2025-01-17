@@ -78,6 +78,24 @@ class RandomRecipeCard extends StatelessWidget {
                   ),
                 );
               },
+              errorWidget: (context, url, error) {
+                return const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error),
+                    Gap(8),
+                    Text('Error loading image'),
+                  ],
+                );
+              },
+              progressIndicatorBuilder: (context, url, progress) {
+                return  Center(
+                  child: CircularProgressIndicator(
+                    value: progress.progress,
+                  ),
+                );
+              },
             ),
           ),
           Padding(

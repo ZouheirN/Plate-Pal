@@ -85,24 +85,66 @@ class _SearchScreenState extends State<SearchScreen> {
                 if (state is RecipesLoading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is SearchRecipesError) {
-                  return Center(child: Text(state.error.toString()));
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error),
+                        Gap(8),
+                        Text('Error loading recipes'),
+                      ],
+                    ),
+                  );
                 } else if (state is SearchRecipesDone) {
                   if (state.searchRecipe!.results?.isEmpty ?? true) {
                     return const Center(child: Text('No results found'));
                   }
 
                   return Expanded(
-                    child: ListView.builder(
-                      itemCount: state.searchRecipe!.results?.length,
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: state.searchRecipe!.results!.length,
+                      separatorBuilder: (context, index) {
+                        return const Gap(8);
+                      },
                       itemBuilder: (context, index) {
                         final recipe = state.searchRecipe!.results?[index];
 
                         return ListTile(
                           leading: CachedNetworkImage(
                             imageUrl: recipe!.image!,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                width: 70,
+                                height: 70,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return const Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.error),
+                                  Gap(8),
+                                  Text('Error loading image'),
+                                ],
+                              );
+                            },
+                            progressIndicatorBuilder: (context, url, progress) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: progress.progress,
+                                ),
+                              );
+                            },
                           ),
                           title: Text(recipe.title!),
                           trailing: const Icon(Icons.arrow_forward_ios),

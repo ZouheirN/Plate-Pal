@@ -90,14 +90,20 @@ class _HomeState extends State<Home> {
             ),
             Column(
               children: [
-                const ListTile(
-                  title: Text(
+                ListTile(
+                  title: const Text(
                     'Random Recipes',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () {
+                      context.read<RecipesBloc>().add(const GetRandomRecipes());
+                    },
                   ),
                 ),
                 _buildBody(),
@@ -251,13 +257,14 @@ class _HomeState extends State<Home> {
         }
 
         if (state is RandomRecipesError) {
-          return Center(
-            child: IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () {
-                context.read<RecipesBloc>().add(const GetRandomRecipes());
-              },
-            ),
+          return const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.error),
+              Gap(8),
+              Text('Error loading recipes'),
+            ],
           );
         }
 
