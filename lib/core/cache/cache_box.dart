@@ -4,7 +4,6 @@ class CacheBox {
   static final Box _box = Hive.box('cacheBox');
 
   static void putCache(String type, dynamic data) async {
-    await _box.clear();
     _box.put(type, data);
   }
 

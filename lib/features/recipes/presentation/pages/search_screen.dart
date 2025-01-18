@@ -139,9 +139,13 @@ class _SearchScreenState extends State<SearchScreen> {
                               );
                             },
                             progressIndicatorBuilder: (context, url, progress) {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value: progress.progress,
+                              return SizedBox(
+                                width: 70,
+                                height: 70,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: progress.progress,
+                                  ),
                                 ),
                               );
                             },
