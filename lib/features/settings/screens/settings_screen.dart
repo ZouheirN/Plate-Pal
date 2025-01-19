@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           onTap: () async {
                             showDialog(
                               context: context,
-                              builder: (context) => AlertDialog(
+                              builder: (context) => AlertDialog.adaptive(
                                 title: const Text('Pick a color!'),
                                 content: SingleChildScrollView(
                                   child: ColorPicker(
@@ -80,7 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                     ),
-                    SwitchListTile(
+                    SwitchListTile.adaptive(
                       title: const Text('Use Material You'),
                       value: SettingsBox.useMaterialYou,
                       onChanged: (value) {
@@ -91,16 +91,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       absorbing: isAmoledBlack,
                       child: Opacity(
                         opacity: isAmoledBlack ? 0.5 : 1,
-                        child: SwitchListTile(
+                        child: SwitchListTile.adaptive(
                           title: const Text('Dark mode'),
                           value: SettingsBox.darkMode,
                           onChanged: (value) {
                             SettingsBox.darkMode = value;
                           },
+                          thumbIcon: SettingsBox.darkMode
+                              ? WidgetStateProperty.all(
+                                  const Icon(Icons.dark_mode_outlined))
+                              : WidgetStateProperty.all(
+                                  const Icon(Icons.wb_sunny_outlined)),
                         ),
                       ),
                     ),
-                    SwitchListTile(
+                    SwitchListTile.adaptive(
                       title: const Text('Use AMOLED Black'),
                       value: SettingsBox.useAmoledBlack,
                       onChanged: (value) {
