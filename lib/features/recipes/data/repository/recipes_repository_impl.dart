@@ -1,20 +1,22 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:platepal/core/cache/cache_box.dart';
 import 'package:platepal/core/constants/constants.dart';
 import 'package:platepal/core/resources/data_state.dart';
+import 'package:platepal/features/recipes/data/data_sources/local/recipes_local_data_source.dart';
 import 'package:platepal/features/recipes/data/data_sources/remote/recipes_api_service.dart';
 import 'package:platepal/features/recipes/data/models/random_recipes.dart';
 import 'package:platepal/features/recipes/data/models/recipe_instructions.dart';
 import 'package:platepal/features/recipes/data/models/search_recipe.dart';
 import 'package:platepal/features/recipes/data/models/similar_recipes.dart';
 import 'package:platepal/features/recipes/domain/repository/recipes_repository.dart';
+import 'package:platepal/main.dart';
 
 class RecipesRepositoryImpl implements RecipesRepository {
   final RecipesApiService _recipesApiService;
+  final RecipesLocalDataSource _recipesLocalDataSource;
 
-  RecipesRepositoryImpl(this._recipesApiService);
+  RecipesRepositoryImpl(this._recipesApiService, this._recipesLocalDataSource);
 
   @override
   Future<DataState<RandomRecipesModel>> getRandomRecipes() async {
@@ -26,7 +28,7 @@ class RecipesRepositoryImpl implements RecipesRepository {
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        CacheBox.putCache('getRandomRecipes', httpResponse.data);
+        _recipesLocalDataSource.storeRandomRecipes(recipes: httpResponse.data);
 
         return DataSuccess(httpResponse.data);
       } else {
@@ -41,7 +43,7 @@ class RecipesRepositoryImpl implements RecipesRepository {
       }
     } on DioException catch (e) {
       if (e.error.runtimeType == SocketException) {
-        final cache = CacheBox.getCache('getRandomRecipes');
+        final cache = _recipesLocalDataSource.loadRandomRecipes();
 
         if (cache == null) {
           return DataFailed(e);
@@ -65,7 +67,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        CacheBox.putCache('getRecipeInstructions+$recipeId', httpResponse.data);
+        _recipesLocalDataSource.storeRecipeInstructions(
+          recipeId: recipeId,
+          instructions: httpResponse.data,
+        );
 
         return DataSuccess(httpResponse.data);
       } else {
@@ -80,7 +85,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
       }
     } on DioException catch (e) {
       if (e.error.runtimeType == SocketException) {
-        final cache = CacheBox.getCache('getRecipeInstructions+$recipeId');
+        final cache = _recipesLocalDataSource.loadRecipeInstructions(
+          recipeId: recipeId,
+        );
 
         if (cache == null) {
           return DataFailed(e);
@@ -104,7 +111,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        CacheBox.putCache('getSimilarRecipes+$recipeId', httpResponse.data);
+        _recipesLocalDataSource.storeSimilarRecipes(
+          recipeId: recipeId,
+          similarRecipes: httpResponse.data,
+        );
 
         return DataSuccess(httpResponse.data);
       } else {
@@ -119,7 +129,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
       }
     } on DioException catch (e) {
       if (e.error.runtimeType == SocketException) {
-        final cache = CacheBox.getCache('getSimilarRecipes+$recipeId');
+        final cache = _recipesLocalDataSource.loadSimilarRecipes(
+          recipeId: recipeId,
+        );
 
         if (cache == null) {
           return DataFailed(e);
@@ -143,7 +155,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        CacheBox.putCache('getRecipeInformation+$recipeId', httpResponse.data);
+        _recipesLocalDataSource.storeRecipeInformation(
+          recipe: httpResponse.data,
+          recipeId: recipeId,
+        );
 
         return DataSuccess(httpResponse.data);
       } else {
@@ -158,7 +173,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
       }
     } on DioException catch (e) {
       if (e.error.runtimeType == SocketException) {
-        final cache = CacheBox.getCache('getRecipeInformation+$recipeId');
+        final cache = _recipesLocalDataSource.loadRecipeInformation(
+          recipeId: recipeId,
+        );
 
         if (cache == null) {
           return DataFailed(e);
@@ -183,7 +200,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        CacheBox.putCache('searchRecipes+$query', httpResponse.data);
+        _recipesLocalDataSource.storeSearchRecipes(
+          query: query,
+          recipes: httpResponse.data,
+        );
 
         return DataSuccess(httpResponse.data);
       } else {
@@ -198,7 +218,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
       }
     } on DioException catch (e) {
       if (e.error.runtimeType == SocketException) {
-        final cache = CacheBox.getCache('searchRecipes+$query');
+        final cache = _recipesLocalDataSource.loadSearchRecipes(
+          query: query,
+        );
 
         if (cache == null) {
           return DataFailed(e);
@@ -225,8 +247,11 @@ class RecipesRepositoryImpl implements RecipesRepository {
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        CacheBox.putCache(
-            'searchRecipesByCategories+$cuisines+$diets', httpResponse.data);
+        _recipesLocalDataSource.storeSearchRecipesByCategories(
+          cuisines: cuisines,
+          diets: diets,
+          recipes: httpResponse.data,
+        );
 
         return DataSuccess(httpResponse.data);
       } else {
@@ -241,8 +266,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
       }
     } on DioException catch (e) {
       if (e.error.runtimeType == SocketException) {
-        final cache =
-            CacheBox.getCache('searchRecipesByCategories+$cuisines+$diets');
+        final cache = _recipesLocalDataSource.loadSearchRecipesByCategories(
+          cuisines: cuisines,
+          diets: diets,
+        );
 
         if (cache == null) {
           return DataFailed(e);

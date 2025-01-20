@@ -17,14 +17,7 @@ Future<void> main() async {
 
   await dotenv.load(fileName: ".env");
 
-  // Hive
-  await Hive.initFlutter();
-  Hive.registerAdapters();
-  await Hive.openBox('favoritesBox');
-  await Hive.openBox('settingsBox');
-  await Hive.openBox('cacheBox');
-
-  // get_it setup
+  // setup
   await initializeDependencies();
 
   runApp(const MyApp());
