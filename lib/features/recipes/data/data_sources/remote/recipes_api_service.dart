@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:platepal/core/constants/constants.dart';
+import 'package:platepal/features/recipes/data/models/image_analysis.dart';
 import 'package:platepal/features/recipes/data/models/random_recipes.dart';
 import 'package:platepal/features/recipes/data/models/recipe_instructions.dart';
 import 'package:platepal/features/recipes/data/models/search_recipe.dart';
@@ -50,5 +54,13 @@ abstract class RecipesApiService {
     @Query('cuisine') String? cuisine,
     @Query('diet') String? diet,
     @Query('includeNutrition') String? includeNutrition,
+  });
+
+  @POST('/food/images/analyze')
+  @Header('Content-Type: application/json')
+  @MultiPart()
+  Future<HttpResponse<ImageAnalysisModel>> getImageAnalysis({
+    @Query('apiKey') String? apiKey,
+    @Part() File? file,
   });
 }

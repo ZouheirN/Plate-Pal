@@ -7,13 +7,19 @@ import 'package:platepal/config/hive/hive_adapters.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(CaloriesEntityAdapter());
+    registerAdapter(CategoryEntityAdapter());
+    registerAdapter(ConfidenceRange95PercentEntityAdapter());
     registerAdapter(EntEntityAdapter());
     registerAdapter(ExtendedIngredientsEntityAdapter());
+    registerAdapter(ImageAnalysisEntityAdapter());
     registerAdapter(LengthEntityAdapter());
     registerAdapter(MeasuresEntityAdapter());
     registerAdapter(MetricEntityAdapter());
+    registerAdapter(NutritionEntityAdapter());
     registerAdapter(RandomRecipesEntityAdapter());
     registerAdapter(RecipeEntityAdapter());
+    registerAdapter(RecipeIAEntityAdapter());
     registerAdapter(RecipeInstructionsEntityAdapter());
     registerAdapter(ResultEntityAdapter());
     registerAdapter(SearchRecipeEntityAdapter());

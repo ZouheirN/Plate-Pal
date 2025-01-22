@@ -1,4 +1,8 @@
-import 'package:hive_ce/hive.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:platepal/features/recipes/data/models/image_analysis.dart';
 import 'package:platepal/features/recipes/data/models/random_recipes.dart';
 import 'package:platepal/features/recipes/data/models/recipe_instructions.dart';
 import 'package:platepal/features/recipes/data/models/search_recipe.dart';
@@ -57,22 +61,33 @@ abstract interface class RecipesLocalDataSource {
     required String cuisines,
     required String diets,
   });
+
+  ValueListenable<Box>? getRecipeAnalysis();
+
+  Future<void> storeImageAnalysis({
+    required File image,
+    required ImageAnalysisModel imageAnalysis,
+  });
 }
 
 class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
-  final Box box;
+  final Box cacheBox;
+  final Box recipeAnalysisBox;
 
-  RecipesLocalDataSourceImpl({required this.box});
+  RecipesLocalDataSourceImpl({
+    required this.cacheBox,
+    required this.recipeAnalysisBox,
+  });
 
   @override
   Future<void> storeRandomRecipes({required RandomRecipesModel recipes}) async {
-    await box.clear();
-    await box.put('randomRecipes', recipes);
+    await cacheBox.clear();
+    await cacheBox.put('randomRecipes', recipes);
   }
 
   @override
   RandomRecipesModel? loadRandomRecipes() {
-    return box.get('randomRecipes');
+    return cacheBox.get('randomRecipes');
   }
 
   @override
@@ -80,15 +95,15 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
     required List<RecipeInstructionsModel> instructions,
     required int recipeId,
   }) async {
-    await box.clear();
-    await box.put('recipeInstructions+$recipeId', instructions);
+    await cacheBox.clear();
+    await cacheBox.put('recipeInstructions+$recipeId', instructions);
   }
 
   @override
   List<RecipeInstructionsModel>? loadRecipeInstructions({
     required int recipeId,
   }) {
-    return box.get('recipeInstructions+$recipeId');
+    return cacheBox.get('recipeInstructions+$recipeId');
   }
 
   @override
@@ -96,15 +111,15 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
     required List<SimilarRecipesModel> similarRecipes,
     required int recipeId,
   }) async {
-    await box.clear();
-    await box.put('similarRecipes+$recipeId', similarRecipes);
+    await cacheBox.clear();
+    await cacheBox.put('similarRecipes+$recipeId', similarRecipes);
   }
 
   @override
   List<SimilarRecipesModel>? loadSimilarRecipes({
     required int recipeId,
   }) {
-    return box.get('similarRecipes+$recipeId');
+    return cacheBox.get('similarRecipes+$recipeId');
   }
 
   @override
@@ -112,15 +127,15 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
     required RecipeModel recipe,
     required int recipeId,
   }) async {
-    await box.clear();
-    await box.put('recipeInformation+$recipeId', recipe);
+    await cacheBox.clear();
+    await cacheBox.put('recipeInformation+$recipeId', recipe);
   }
 
   @override
   RecipeModel? loadRecipeInformation({
     required int recipeId,
   }) {
-    return box.get('recipeInformation+$recipeId');
+    return cacheBox.get('recipeInformation+$recipeId');
   }
 
   @override
@@ -128,15 +143,15 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
     required SearchRecipeModel recipes,
     required String query,
   }) async {
-    await box.clear();
-    await box.put('searchRecipes+$query', recipes);
+    await cacheBox.clear();
+    await cacheBox.put('searchRecipes+$query', recipes);
   }
 
   @override
   SearchRecipeModel? loadSearchRecipes({
     required String query,
   }) {
-    return box.get('searchRecipes+$query');
+    return cacheBox.get('searchRecipes+$query');
   }
 
   @override
@@ -145,8 +160,8 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
     required String cuisines,
     required String diets,
   }) async {
-    await box.clear();
-    await box.put('searchRecipesByCategories+$cuisines+$diets', recipes);
+    await cacheBox.clear();
+    await cacheBox.put('searchRecipesByCategories+$cuisines+$diets', recipes);
   }
 
   @override
@@ -154,6 +169,21 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
     required String cuisines,
     required String diets,
   }) {
-    return box.get('searchRecipesByCategories+$cuisines+$diets');
+    return cacheBox.get('searchRecipesByCategories+$cuisines+$diets');
+  }
+
+  @override
+  ValueListenable<Box>? getRecipeAnalysis() {
+    return recipeAnalysisBox.listenable();
+  }
+
+  @override
+  Future<void> storeImageAnalysis({
+    required File image,
+    required ImageAnalysisModel imageAnalysis,
+  }) async {
+    final key = image.path;
+
+    return await recipeAnalysisBox.put(key, imageAnalysis);
   }
 }

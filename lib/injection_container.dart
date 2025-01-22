@@ -6,12 +6,15 @@ import 'package:platepal/features/recipes/data/data_sources/local/recipes_local_
 import 'package:platepal/features/recipes/data/data_sources/remote/recipes_api_service.dart';
 import 'package:platepal/features/recipes/data/repository/recipes_repository_impl.dart';
 import 'package:platepal/features/recipes/domain/repository/recipes_repository.dart';
+import 'package:platepal/features/recipes/domain/usecases/get_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_random_recipes.dart';
+import 'package:platepal/features/recipes/domain/usecases/get_recipe_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_information.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_instructions.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_similar_recipes.dart';
 import 'package:platepal/features/recipes/domain/usecases/search_recipes.dart';
 import 'package:platepal/features/recipes/domain/usecases/search_recipes_by_categories.dart';
+import 'package:platepal/features/recipes/domain/usecases/store_image_analysis.dart';
 import 'features/recipes/presentation/bloc/recipes/recipes_bloc.dart';
 
 final sl = GetIt.instance;
@@ -23,8 +26,7 @@ Future<void> initializeDependencies() async {
   await Hive.openBox('favoritesBox');
   await Hive.openBox('settingsBox');
   await Hive.openBox('cacheBox');
-
-  sl.registerSingleton<Box>(Hive.box('cacheBox'));
+  await Hive.openBox('recipeAnalysisBox');
 
   // Dio
   sl.registerSingleton<Dio>(Dio());
@@ -33,7 +35,10 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<RecipesApiService>(RecipesApiService(sl()));
 
   sl.registerSingleton<RecipesLocalDataSource>(
-    RecipesLocalDataSourceImpl(box: sl()),
+    RecipesLocalDataSourceImpl(
+      cacheBox: Hive.box('cacheBox'),
+      recipeAnalysisBox: Hive.box('recipeAnalysisBox'),
+    ),
   );
 
   sl.registerSingleton<RecipesRepository>(
@@ -62,10 +67,22 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton(
     SearchRecipesByCategoriesUseCase(sl()),
   );
+  sl.registerSingleton(
+    GetRecipeAnalysisUseCase(sl()),
+  );
+  sl.registerSingleton(
+    GetImageAnalysisUseCase(sl()),
+  );
+  sl.registerSingleton(
+    StoreImageAnalysisUseCase(sl()),
+  );
 
   // BLoCs
   sl.registerFactory<RecipesBloc>(
     () => RecipesBloc(
+      sl(),
+      sl(),
+      sl(),
       sl(),
       sl(),
       sl(),

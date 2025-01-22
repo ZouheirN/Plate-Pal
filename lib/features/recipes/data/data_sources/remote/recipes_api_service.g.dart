@@ -276,6 +276,56 @@ class _RecipesApiService implements RecipesApiService {
     return httpResponse;
   }
 
+  @override
+  Future<HttpResponse<ImageAnalysisModel>> getImageAnalysis({
+    String? apiKey,
+    File? file,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'apiKey': apiKey};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    if (file != null) {
+      if (file != null) {
+        _data.files.add(MapEntry(
+          'file',
+          MultipartFile.fromFileSync(
+            file.path,
+            filename: file.path.split(Platform.pathSeparator).last,
+          ),
+        ));
+      }
+    }
+    final _options = _setStreamType<HttpResponse<ImageAnalysisModel>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+        .compose(
+          _dio.options,
+          '/food/images/analyze',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ImageAnalysisModel _value;
+    try {
+      _value = ImageAnalysisModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

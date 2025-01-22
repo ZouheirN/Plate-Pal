@@ -1,16 +1,18 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:platepal/core/constants/constants.dart';
 import 'package:platepal/core/resources/data_state.dart';
 import 'package:platepal/features/recipes/data/data_sources/local/recipes_local_data_source.dart';
 import 'package:platepal/features/recipes/data/data_sources/remote/recipes_api_service.dart';
+import 'package:platepal/features/recipes/data/models/image_analysis.dart';
 import 'package:platepal/features/recipes/data/models/random_recipes.dart';
 import 'package:platepal/features/recipes/data/models/recipe_instructions.dart';
 import 'package:platepal/features/recipes/data/models/search_recipe.dart';
 import 'package:platepal/features/recipes/data/models/similar_recipes.dart';
+import 'package:platepal/features/recipes/domain/entities/image_analysis.dart';
 import 'package:platepal/features/recipes/domain/repository/recipes_repository.dart';
-import 'package:platepal/main.dart';
 
 class RecipesRepositoryImpl implements RecipesRepository {
   final RecipesApiService _recipesApiService;
@@ -280,5 +282,63 @@ class RecipesRepositoryImpl implements RecipesRepository {
 
       return DataFailed(e);
     }
+  }
+
+  @override
+  Future<DataState<ValueListenable>> getRecipeAnalysis() async {
+    final valueListenable = _recipesLocalDataSource.getRecipeAnalysis();
+
+    if (valueListenable != null) {
+      return DataSuccess(valueListenable);
+    } else {
+      return DataFailed(
+        null,
+        exception: Exception('Value listenable is null'),
+      );
+    }
+  }
+
+  @override
+  Future<DataState<ImageAnalysisEntity>> getImageAnalysis({
+    required File image,
+  }) async {
+    try {
+      final httpResponse = await _recipesApiService.getImageAnalysis(
+        apiKey: apiKey,
+        file: image,
+      );
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<void> storeImageAnalysis({
+    required File image,
+    required ImageAnalysisEntity imageAnalysisEntity,
+  }) {
+    final imageAnalysisModel = ImageAnalysisModel(
+      recipes: imageAnalysisEntity.recipes,
+      category: imageAnalysisEntity.category,
+      nutrition: imageAnalysisEntity.nutrition,
+    );
+
+    return _recipesLocalDataSource.storeImageAnalysis(
+      image: image,
+      imageAnalysis: imageAnalysisModel,
+    );
   }
 }

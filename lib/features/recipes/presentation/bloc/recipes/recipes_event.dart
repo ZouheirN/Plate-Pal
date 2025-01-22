@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:platepal/features/recipes/domain/entities/image_analysis.dart';
 import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
 
 abstract class RecipesEvent {
@@ -43,4 +47,24 @@ class SearchRecipesByCategories extends RecipesEvent {
   final List<String> diets;
 
   SearchRecipesByCategories(this.cuisines, this.diets);
+}
+
+class GetRecipeAnalysis extends RecipesEvent {
+  const GetRecipeAnalysis();
+}
+
+class GetImageAnalysis extends RecipesEvent {
+  final File image;
+
+  const GetImageAnalysis({required this.image});
+}
+
+class StoreImageAnalysis extends RecipesEvent {
+  final File image;
+  final ImageAnalysisEntity imageAnalysisEntity;
+
+  const StoreImageAnalysis({
+    required this.image,
+    required this.imageAnalysisEntity,
+  });
 }

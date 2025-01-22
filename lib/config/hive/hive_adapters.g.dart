@@ -594,3 +594,250 @@ class SimilarRecipesEntityAdapter extends TypeAdapter<SimilarRecipesEntity> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class ImageAnalysisEntityAdapter extends TypeAdapter<ImageAnalysisEntity> {
+  @override
+  final int typeId = 13;
+
+  @override
+  ImageAnalysisEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ImageAnalysisEntity(
+      nutrition: fields[0] as NutritionEntity?,
+      category: fields[1] as CategoryEntity?,
+      recipes: (fields[2] as List?)?.cast<RecipeIAEntity>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ImageAnalysisEntity obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.nutrition)
+      ..writeByte(1)
+      ..write(obj.category)
+      ..writeByte(2)
+      ..write(obj.recipes);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ImageAnalysisEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class CategoryEntityAdapter extends TypeAdapter<CategoryEntity> {
+  @override
+  final int typeId = 14;
+
+  @override
+  CategoryEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return CategoryEntity(
+      name: fields[0] as String?,
+      probability: (fields[1] as num?)?.toDouble(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, CategoryEntity obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.probability);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class NutritionEntityAdapter extends TypeAdapter<NutritionEntity> {
+  @override
+  final int typeId = 15;
+
+  @override
+  NutritionEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return NutritionEntity(
+      recipesUsed: (fields[0] as num?)?.toInt(),
+      calories: fields[1] as CaloriesEntity?,
+      fat: fields[2] as CaloriesEntity?,
+      protein: fields[3] as CaloriesEntity?,
+      carbs: fields[4] as CaloriesEntity?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, NutritionEntity obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.recipesUsed)
+      ..writeByte(1)
+      ..write(obj.calories)
+      ..writeByte(2)
+      ..write(obj.fat)
+      ..writeByte(3)
+      ..write(obj.protein)
+      ..writeByte(4)
+      ..write(obj.carbs);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NutritionEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class CaloriesEntityAdapter extends TypeAdapter<CaloriesEntity> {
+  @override
+  final int typeId = 16;
+
+  @override
+  CaloriesEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return CaloriesEntity(
+      value: (fields[0] as num?)?.toInt(),
+      unit: fields[1] as String?,
+      confidenceRange95Percent: fields[2] as ConfidenceRange95PercentEntity?,
+      standardDeviation: (fields[3] as num?)?.toDouble(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, CaloriesEntity obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.value)
+      ..writeByte(1)
+      ..write(obj.unit)
+      ..writeByte(2)
+      ..write(obj.confidenceRange95Percent)
+      ..writeByte(3)
+      ..write(obj.standardDeviation);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CaloriesEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class ConfidenceRange95PercentEntityAdapter
+    extends TypeAdapter<ConfidenceRange95PercentEntity> {
+  @override
+  final int typeId = 17;
+
+  @override
+  ConfidenceRange95PercentEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ConfidenceRange95PercentEntity(
+      min: (fields[0] as num?)?.toDouble(),
+      max: (fields[1] as num?)?.toDouble(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ConfidenceRange95PercentEntity obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.min)
+      ..writeByte(1)
+      ..write(obj.max);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ConfidenceRange95PercentEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class RecipeIAEntityAdapter extends TypeAdapter<RecipeIAEntity> {
+  @override
+  final int typeId = 18;
+
+  @override
+  RecipeIAEntity read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return RecipeIAEntity(
+      id: (fields[0] as num?)?.toInt(),
+      title: fields[1] as String?,
+      imageType: fields[2] as String?,
+      sourceUrl: fields[3] as String?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, RecipeIAEntity obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.imageType)
+      ..writeByte(3)
+      ..write(obj.sourceUrl);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RecipeIAEntityAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

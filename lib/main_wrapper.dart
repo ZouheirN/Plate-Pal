@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:platepal/features/favorites/screens/favorites_screen.dart';
+import 'package:platepal/features/recipes/presentation/pages/camera_screen.dart';
 import 'package:platepal/features/recipes/presentation/pages/home.dart';
 import 'package:platepal/features/settings/screens/settings_screen.dart';
 
@@ -35,6 +36,11 @@ class _MainWrapperState extends State<MainWrapper> {
             label: 'Favorites',
           ),
           NavigationDestination(
+            selectedIcon: Icon(Icons.camera_alt),
+            icon: Icon(Icons.camera_alt_outlined),
+            label: 'Camera',
+          ),
+          NavigationDestination(
             selectedIcon: Icon(Icons.settings),
             icon: Icon(Icons.settings_outlined),
             label: 'Settings',
@@ -46,6 +52,7 @@ class _MainWrapperState extends State<MainWrapper> {
         children: const [
           Home(),
           FavoritesScreen(),
+          CameraScreen(),
           SettingsScreen(),
         ],
       ),
