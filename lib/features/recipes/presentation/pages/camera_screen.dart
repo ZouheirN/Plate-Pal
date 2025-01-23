@@ -7,6 +7,7 @@ import 'package:platepal/features/recipes/domain/entities/image_analysis.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_bloc.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_event.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_state.dart';
+import 'package:platepal/features/recipes/presentation/widgets/image_analysis_card.dart';
 import 'package:platepal/features/recipes/presentation/widgets/select_image_sheet.dart';
 import 'package:platepal/injection_container.dart';
 import 'package:platepal/main.dart';
@@ -45,97 +46,6 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
       body: Stack(
         children: [
-          BlocBuilder(
-            bloc: _recipeBloc,
-            builder: (context, state) {
-              if (state is RecipesLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              if (state is RecipeAnalysisDone) {
-                final valueListenable = state.recipeAnalysis;
-
-                return ValueListenableBuilder(
-                  valueListenable: valueListenable!,
-                  builder: (context, box, child) {
-                    final List images = (box as Box).keys.toList();
-                    final List<ImageAnalysisEntity?> recipesAnalyses =
-                        List<ImageAnalysisEntity?>.from((box).values.toList());
-
-                    if (recipesAnalyses.isEmpty) {
-                      return const Center(
-                        child: Text(
-                            'Take pictures to get detailed food analysis!'),
-                      );
-                    }
-
-                    return GridView.builder(
-                      padding: const EdgeInsets.all(8),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                      ),
-                      itemCount: recipesAnalyses.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: FileImage(
-                                        File(images[index] as String),
-                                      ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      gradient: const LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.transparent,
-                                          Colors.black,
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 4,
-                                  bottom: 4,
-                                ),
-                                child: Text(recipesAnalyses[index]!
-                                    .category!
-                                    .name
-                                    .toString()),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
-              }
-
-              if (state is RecipeAnalysisError) {
-                return const Center(
-                  child: Text('Error'),
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
-          ),
           BlocListener(
             bloc: _imagesRecipeBloc,
             listener: (context, state) {
@@ -176,7 +86,60 @@ class _CameraScreenState extends State<CameraScreen> {
                   );
               }
             },
-            child: const SizedBox.shrink(),
+            child: BlocBuilder(
+              bloc: _recipeBloc,
+              builder: (context, state) {
+                if (state is RecipesLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (state is RecipeAnalysisDone) {
+                  final valueListenable = state.recipeAnalysis;
+
+                  return ValueListenableBuilder(
+                    valueListenable: valueListenable!,
+                    builder: (context, box, child) {
+                      final List images = (box as Box).keys.toList();
+                      final List<ImageAnalysisEntity?> recipesAnalyses =
+                          List<ImageAnalysisEntity?>.from(
+                              (box).values.toList());
+
+                      if (recipesAnalyses.isEmpty) {
+                        return const Center(
+                          child: Text(
+                              'Take pictures to get detailed food analysis!'),
+                        );
+                      }
+
+                      return GridView.builder(
+                        padding: const EdgeInsets.all(8),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                        ),
+                        itemCount: recipesAnalyses.length,
+                        itemBuilder: (context, index) {
+                          return ImageAnalysisCard(
+                            image: File(images[index] as String),
+                            recipeAnalysis: recipesAnalyses[index],
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+
+                if (state is RecipeAnalysisError) {
+                  return const Center(
+                    child: Text('Error'),
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
           ),
         ],
       ),

@@ -79,98 +79,6 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               const Gap(20),
             ],
-            BlocBuilder<RecipesBloc, RecipesState>(
-              bloc: _recipesSearchBloc,
-              builder: (context, state) {
-                if (state is RecipesLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is SearchRecipesError) {
-                  return const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(Icons.error),
-                        Gap(8),
-                        Text('Error loading recipes'),
-                      ],
-                    ),
-                  );
-                } else if (state is SearchRecipesDone) {
-                  if (state.searchRecipe!.results?.isEmpty ?? true) {
-                    return const Center(child: Text('No results found'));
-                  }
-
-                  return Expanded(
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: state.searchRecipe!.results!.length,
-                      separatorBuilder: (context, index) {
-                        return const Gap(8);
-                      },
-                      itemBuilder: (context, index) {
-                        final recipe = state.searchRecipe!.results?[index];
-
-                        return ListTile(
-                          leading: CachedNetworkImage(
-                            imageUrl: recipe!.image!,
-                            imageBuilder: (context, imageProvider) {
-                              return Container(
-                                width: 70,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              );
-                            },
-                            errorWidget: (context, url, error) {
-                              return const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.error),
-                                  Gap(8),
-                                  Text('Error loading image'),
-                                ],
-                              );
-                            },
-                            progressIndicatorBuilder: (context, url, progress) {
-                              return SizedBox(
-                                width: 70,
-                                height: 70,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value: progress.progress,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          title: Text(recipe.title!),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () {
-                            if (isLoading) {
-                              return;
-                            }
-
-                            isLoading = true;
-
-                            _recipeBloc.add(
-                                GetRecipeInformation(recipeId: recipe.id!));
-                          },
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
-            ),
             BlocListener<RecipesBloc, RecipesState>(
               bloc: _recipeBloc,
               listener: (context, state) {
@@ -186,7 +94,99 @@ class _SearchScreenState extends State<SearchScreen> {
                   );
                 }
               },
-              child: const SizedBox.shrink(),
+              child: BlocBuilder<RecipesBloc, RecipesState>(
+                bloc: _recipesSearchBloc,
+                builder: (context, state) {
+                  if (state is RecipesLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is SearchRecipesError) {
+                    return const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error),
+                          Gap(8),
+                          Text('Error loading recipes'),
+                        ],
+                      ),
+                    );
+                  } else if (state is SearchRecipesDone) {
+                    if (state.searchRecipe!.results?.isEmpty ?? true) {
+                      return const Center(child: Text('No results found'));
+                    }
+
+                    return Expanded(
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: state.searchRecipe!.results!.length,
+                        separatorBuilder: (context, index) {
+                          return const Gap(8);
+                        },
+                        itemBuilder: (context, index) {
+                          final recipe = state.searchRecipe!.results?[index];
+
+                          return ListTile(
+                            leading: CachedNetworkImage(
+                              imageUrl: recipe!.image!,
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  width: 70,
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                );
+                              },
+                              errorWidget: (context, url, error) {
+                                return const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.error),
+                                    Gap(8),
+                                    Text('Error loading image'),
+                                  ],
+                                );
+                              },
+                              progressIndicatorBuilder:
+                                  (context, url, progress) {
+                                return SizedBox(
+                                  width: 70,
+                                  height: 70,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value: progress.progress,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            title: Text(recipe.title!),
+                            trailing: const Icon(Icons.arrow_forward_ios),
+                            onTap: () {
+                              if (isLoading) {
+                                return;
+                              }
+
+                              isLoading = true;
+
+                              _recipeBloc.add(
+                                  GetRecipeInformation(recipeId: recipe.id!));
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+              ),
             ),
           ],
         ),
