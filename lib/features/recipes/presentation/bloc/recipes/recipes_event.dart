@@ -68,3 +68,9 @@ class StoreImageAnalysis extends RecipesEvent {
     required this.imageAnalysisEntity,
   });
 }
+
+class DeleteImageAnalysis extends RecipesEvent {
+  final File image;
+
+  const DeleteImageAnalysis({required this.image});
+}

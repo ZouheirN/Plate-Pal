@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platepal/core/resources/data_state.dart';
+import 'package:platepal/features/recipes/domain/usecases/delete_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_random_recipes.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_analysis.dart';
@@ -22,6 +23,7 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
   final GetRecipeAnalysisUseCase _getRecipeAnalysisUseCase;
   final GetImageAnalysisUseCase _getImageAnalysisUseCase;
   final StoreImageAnalysisUseCase _storeImageAnalysisUseCase;
+  final DeleteImageAnalysisUseCase _deleteImageAnalysisUseCase;
 
   RecipesBloc(
     this._getRandomRecipesUseCase,
@@ -33,6 +35,7 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     this._getRecipeAnalysisUseCase,
     this._getImageAnalysisUseCase,
     this._storeImageAnalysisUseCase,
+    this._deleteImageAnalysisUseCase,
   ) : super(const RecipesLoading()) {
     on<GetRandomRecipes>(onGetRandomRecipes);
     on<GetRecipeInstructions>(onGetRecipeInstructions);
@@ -44,6 +47,7 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     on<GetRecipeAnalysis>(onGetRecipeAnalysis);
     on<GetImageAnalysis>(onGetImageAnalysis);
     on<StoreImageAnalysis>(onStoreImageAnalysis);
+    on<DeleteImageAnalysis>(onDeleteImageAnalysis);
   }
 
   Future<void> onGetRandomRecipes(
@@ -194,6 +198,18 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
       emit(const StoreImageAnalysisDone());
     } on Exception catch (e) {
       emit(StoreImageAnalysisError(exception: e));
+    }
+  }
+
+  Future<void> onDeleteImageAnalysis(
+    DeleteImageAnalysis event,
+    Emitter<RecipesState> emit,
+  ) async {
+    try {
+      await _deleteImageAnalysisUseCase(params: event.image);
+      emit(const DeleteImageAnalysisDone());
+    } on Exception catch (e) {
+      emit(DeleteImageAnalysisError(exception: e));
     }
   }
 }

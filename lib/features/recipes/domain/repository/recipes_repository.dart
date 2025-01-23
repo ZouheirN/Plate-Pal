@@ -47,8 +47,14 @@ abstract class RecipesRepository {
     required File image,
   });
 
+  // Store image analysis
   Future<void> storeImageAnalysis({
     required File image,
     required ImageAnalysisEntity imageAnalysisEntity,
+  });
+
+  // Delete image analysis
+  Future<void> deleteImageAnalysis({
+    required File image,
   });
 }

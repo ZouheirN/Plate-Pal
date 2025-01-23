@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:platepal/core/resources/data_state.dart';
 import 'package:platepal/core/usecase/usecase.dart';
 import 'package:platepal/features/recipes/domain/entities/image_analysis.dart';

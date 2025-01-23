@@ -6,6 +6,7 @@ import 'package:platepal/features/recipes/data/data_sources/local/recipes_local_
 import 'package:platepal/features/recipes/data/data_sources/remote/recipes_api_service.dart';
 import 'package:platepal/features/recipes/data/repository/recipes_repository_impl.dart';
 import 'package:platepal/features/recipes/domain/repository/recipes_repository.dart';
+import 'package:platepal/features/recipes/domain/usecases/delete_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_random_recipes.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_analysis.dart';
@@ -76,10 +77,14 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton(
     StoreImageAnalysisUseCase(sl()),
   );
+  sl.registerSingleton(
+    DeleteImageAnalysisUseCase(sl()),
+  );
 
   // BLoCs
   sl.registerFactory<RecipesBloc>(
     () => RecipesBloc(
+      sl(),
       sl(),
       sl(),
       sl(),

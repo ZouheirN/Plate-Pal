@@ -341,4 +341,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
       imageAnalysis: imageAnalysisModel,
     );
   }
+
+  @override
+  Future<void> deleteImageAnalysis({required File image}) {
+    return _recipesLocalDataSource.deleteImageAnalysis(image: image);
+  }
 }

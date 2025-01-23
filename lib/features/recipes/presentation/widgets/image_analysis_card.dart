@@ -211,12 +211,41 @@ class _ImageAnalysisCardState extends State<ImageAnalysisCard> {
               },
               child: const Text('Cancel'),
             ),
-            TextButton(
-              onPressed: () {
-                // todo fix
-                Navigator.of(context).pop();
+            BlocListener<RecipesBloc, RecipesState>(
+              bloc: _recipeBloc,
+              listener: (context, state) {
+                if (state is DeleteImageAnalysisDone) {
+                  ScaffoldMessenger.of(context)
+                    ..clearSnackBars()
+                    ..showSnackBar(
+                      const SnackBar(
+                        content: Text('Image deleted'),
+                      ),
+                    );
+                }
+
+                if (state is DeleteImageAnalysisError) {
+                  ScaffoldMessenger.of(context)
+                    ..clearSnackBars()
+                    ..showSnackBar(
+                      const SnackBar(
+                        content: Text('Error deleting image'),
+                      ),
+                    );
+                }
               },
-              child: const Text('Delete'),
+              child: TextButton(
+                onPressed: () {
+                  _recipeBloc.add(
+                    DeleteImageAnalysis(
+                      image: widget.image,
+                    ),
+                  );
+
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Delete'),
+              ),
             ),
           ],
         );

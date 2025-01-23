@@ -68,6 +68,10 @@ abstract interface class RecipesLocalDataSource {
     required File image,
     required ImageAnalysisModel imageAnalysis,
   });
+
+  Future<void> deleteImageAnalysis({
+    required File image,
+  });
 }
 
 class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
@@ -185,5 +189,12 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
     final key = image.path;
 
     return await recipeAnalysisBox.put(key, imageAnalysis);
+  }
+
+  @override
+  Future<void> deleteImageAnalysis({required File image}) {
+    final key = image.path;
+
+    return recipeAnalysisBox.delete(key);
   }
 }

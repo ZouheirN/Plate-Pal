@@ -114,3 +114,12 @@ class StoreImageAnalysisError extends RecipesState {
   const StoreImageAnalysisError({required Exception exception})
       : super(exception: exception);
 }
+
+class DeleteImageAnalysisDone extends RecipesState {
+  const DeleteImageAnalysisDone();
+}
+
+class DeleteImageAnalysisError extends RecipesState {
+  const DeleteImageAnalysisError({required Exception exception})
+      : super(exception: exception);
+}
