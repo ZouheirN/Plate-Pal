@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:platepal/features/recipes/data/models/image_analysis.dart';
 import 'package:platepal/features/recipes/data/models/random_recipes.dart';
 import 'package:platepal/features/recipes/data/models/recipe_instructions.dart';
@@ -186,15 +188,18 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
     required File image,
     required ImageAnalysisModel imageAnalysis,
   }) async {
-    final key = image.path;
+    // getting a directory path for saving
+    final String path = (await getApplicationDocumentsDirectory()).path;
 
-    return await recipeAnalysisBox.put(key, imageAnalysis);
+    // copy the file to a new path
+    final File newImage = await image.copy(join(path, basename(image.path)));
+
+    return await recipeAnalysisBox.put(newImage.path, imageAnalysis);
   }
 
   @override
   Future<void> deleteImageAnalysis({required File image}) {
     final key = image.path;
-
     return recipeAnalysisBox.delete(key);
   }
 }

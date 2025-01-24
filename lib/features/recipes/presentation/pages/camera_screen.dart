@@ -54,6 +54,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   ..clearSnackBars()
                   ..showSnackBar(
                     const SnackBar(
+                      duration: Duration(minutes: 1),
                       content: Text('Uploading image...'),
                     ),
                   );
