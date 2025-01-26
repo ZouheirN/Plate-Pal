@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gal/gal.dart';
 import 'package:gap/gap.dart';
 import 'package:platepal/features/recipes/domain/entities/image_analysis.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_bloc.dart';
@@ -43,6 +44,35 @@ class _ImageAnalysisCardState extends State<ImageAnalysisCard> {
             shrinkWrap: true,
             children: [
               ListTile(
+                trailing: IconButton(
+                  onPressed: () async {
+                    // Request access permission
+                    await Gal.requestAccess();
+
+                    await Gal.putImage(widget.image.path);
+
+                    if (context.mounted) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Image saved'),
+                            content: const Text('Image saved to gallery'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.save),
+                ),
                 title: const Text(
                   'Predicted Category',
                   style: TextStyle(
@@ -271,7 +301,6 @@ class _ImageAnalysisCardState extends State<ImageAnalysisCard> {
     super.didChangeDependencies();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -320,12 +349,16 @@ class _ImageAnalysisCardState extends State<ImageAnalysisCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(widget.recipeAnalysis!.category!.name!
-                              .substring(0, 1)
-                              .toUpperCase() +
-                          widget.recipeAnalysis!.category!.name!
-                              .substring(1)
-                              .toString()),
+                      Text(
+                        widget.recipeAnalysis!.category!.name!
+                                .replaceAll('_', ' ')
+                                .substring(0, 1)
+                                .toUpperCase() +
+                            widget.recipeAnalysis!.category!.name!
+                                .replaceAll('_', ' ')
+                                .substring(1)
+                                .toString(),
+                      ),
                       Text(
                         '${(widget.recipeAnalysis!.category!.probability! * 100).toStringAsFixed(2)}%',
                       ),

@@ -114,6 +114,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       }
 
                       return GridView.builder(
+                        cacheExtent: 1000,
                         padding: const EdgeInsets.all(8),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
