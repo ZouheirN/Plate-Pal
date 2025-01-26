@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:platepal/features/recipes/domain/entities/image_analysis.dart';
 import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
 
@@ -49,8 +48,8 @@ class SearchRecipesByCategories extends RecipesEvent {
   SearchRecipesByCategories(this.cuisines, this.diets);
 }
 
-class GetRecipeAnalysis extends RecipesEvent {
-  const GetRecipeAnalysis();
+class GetImagesAnalysis extends RecipesEvent {
+  const GetImagesAnalysis();
 }
 
 class GetImageAnalysis extends RecipesEvent {

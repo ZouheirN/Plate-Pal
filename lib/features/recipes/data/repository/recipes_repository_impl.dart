@@ -285,7 +285,7 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
-  Future<DataState<ValueListenable>> getRecipeAnalysis() async {
+  Future<DataState<ValueListenable>> getImagesAnalysis() async {
     final valueListenable = _recipesLocalDataSource.getRecipeAnalysis();
 
     if (valueListenable != null) {

@@ -28,6 +28,7 @@ class ImageAnalysisCard extends StatefulWidget {
 class _ImageAnalysisCardState extends State<ImageAnalysisCard> {
   final _recipeBloc = sl<RecipesBloc>();
   bool isLoading = false;
+  late Future<void> imageFuture;
 
   void _onTap() {
     showModalBottomSheet(
@@ -153,6 +154,8 @@ class _ImageAnalysisCardState extends State<ImageAnalysisCard> {
                     if (state is RecipeInformationDone) {
                       isLoading = false;
 
+                      logger.i(state.recipe!.id);
+
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => RecipeDetails(
@@ -253,48 +256,85 @@ class _ImageAnalysisCardState extends State<ImageAnalysisCard> {
     );
   }
 
+  Future<void> loadImage() async {
+    try {
+      await precacheImage(FileImage(widget.image), context);
+    } catch (e) {
+      logger.e(e);
+      throw Exception('Error loading image');
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    imageFuture = loadImage();
+    super.didChangeDependencies();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _onTap,
       onLongPress: _onLongPress,
       child: Card(
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: FileImage(
-                      widget.image,
+        child: FutureBuilder(
+          future: imageFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.error),
+                  Gap(8),
+                  Text('Error loading image'),
+                ],
+              );
+            }
+
+            return Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                        image: FileImage(widget.image),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 4,
-                bottom: 4,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(widget.recipeAnalysis!.category!.name!
-                          .substring(0, 1)
-                          .toUpperCase() +
-                      widget.recipeAnalysis!.category!.name!
-                          .substring(1)
-                          .toString()),
-                  Text(
-                    '${(widget.recipeAnalysis!.category!.probability! * 100).toStringAsFixed(2)}%',
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 4,
+                    bottom: 4,
                   ),
-                ],
-              ),
-            ),
-          ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(widget.recipeAnalysis!.category!.name!
+                              .substring(0, 1)
+                              .toUpperCase() +
+                          widget.recipeAnalysis!.category!.name!
+                              .substring(1)
+                              .toString()),
+                      Text(
+                        '${(widget.recipeAnalysis!.category!.probability! * 100).toStringAsFixed(2)}%',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platepal/core/resources/data_state.dart';
 import 'package:platepal/features/recipes/domain/usecases/delete_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_random_recipes.dart';
-import 'package:platepal/features/recipes/domain/usecases/get_recipe_analysis.dart';
+import 'package:platepal/features/recipes/domain/usecases/get_images_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_information.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_instructions.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_similar_recipes.dart';
@@ -12,6 +13,7 @@ import 'package:platepal/features/recipes/domain/usecases/search_recipes_by_cate
 import 'package:platepal/features/recipes/domain/usecases/store_image_analysis.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_event.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_state.dart';
+import 'package:platepal/main.dart';
 
 class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
   final GetRandomRecipesUseCase _getRandomRecipesUseCase;
@@ -20,7 +22,7 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
   final GetRecipeInformationUseCase _getRecipeInformationUseCase;
   final SearchRecipesUseCase _searchRecipesUseCase;
   final SearchRecipesByCategoriesUseCase _searchRecipesByCategoriesUseCase;
-  final GetRecipeAnalysisUseCase _getRecipeAnalysisUseCase;
+  final GetImagesAnalysisUseCase _getImagesAnalysisUseCase;
   final GetImageAnalysisUseCase _getImageAnalysisUseCase;
   final StoreImageAnalysisUseCase _storeImageAnalysisUseCase;
   final DeleteImageAnalysisUseCase _deleteImageAnalysisUseCase;
@@ -32,7 +34,7 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     this._getRecipeInformationUseCase,
     this._searchRecipesUseCase,
     this._searchRecipesByCategoriesUseCase,
-    this._getRecipeAnalysisUseCase,
+    this._getImagesAnalysisUseCase,
     this._getImageAnalysisUseCase,
     this._storeImageAnalysisUseCase,
     this._deleteImageAnalysisUseCase,
@@ -44,7 +46,7 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     on<GetRecipeInformation>(onGetRecipeInformation);
     on<SearchRecipes>(onSearchRecipes);
     on<SearchRecipesByCategories>(onSearchRecipesByCategories);
-    on<GetRecipeAnalysis>(onGetRecipeAnalysis);
+    on<GetImagesAnalysis>(onGetImagesAnalysis);
     on<GetImageAnalysis>(onGetImageAnalysis);
     on<StoreImageAnalysis>(onStoreImageAnalysis);
     on<DeleteImageAnalysis>(onDeleteImageAnalysis);
@@ -74,10 +76,19 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     final dataState =
         await _getRecipeInstructionsUseCase(params: event.recipeId);
 
+
     if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
       emit(RecipeInstructionsDone(recipeInstructions: dataState.data!));
     } else if (dataState is DataFailed) {
       emit(RecipeInstructionsError(error: dataState.error!));
+    } else {
+      if (dataState.data!.isEmpty) {
+        emit(
+          RecipeInstructionsError(
+            errorDescription: ErrorDescription('No instructions found'),
+          ),
+        );
+      }
     }
   }
 
@@ -156,18 +167,18 @@ class RecipesBloc extends Bloc<RecipesEvent, RecipesState> {
     }
   }
 
-  Future<void> onGetRecipeAnalysis(
-    GetRecipeAnalysis event,
+  Future<void> onGetImagesAnalysis(
+    GetImagesAnalysis event,
     Emitter<RecipesState> emit,
   ) async {
     emit(const RecipesLoading());
 
-    final dataState = await _getRecipeAnalysisUseCase();
+    final dataState = await _getImagesAnalysisUseCase();
 
     if (dataState is DataSuccess && dataState.data != null) {
-      emit(RecipeAnalysisDone(dataState.data!));
+      emit(ImagesAnalysisDone(dataState.data!));
     } else if (dataState is DataFailed) {
-      emit(RecipeAnalysisError(exception: dataState.exception!));
+      emit(ImagesAnalysisError(exception: dataState.exception!));
     }
   }
 

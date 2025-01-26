@@ -9,7 +9,7 @@ import 'package:platepal/features/recipes/domain/repository/recipes_repository.d
 import 'package:platepal/features/recipes/domain/usecases/delete_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_image_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_random_recipes.dart';
-import 'package:platepal/features/recipes/domain/usecases/get_recipe_analysis.dart';
+import 'package:platepal/features/recipes/domain/usecases/get_images_analysis.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_information.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_recipe_instructions.dart';
 import 'package:platepal/features/recipes/domain/usecases/get_similar_recipes.dart';
@@ -69,7 +69,7 @@ Future<void> initializeDependencies() async {
     SearchRecipesByCategoriesUseCase(sl()),
   );
   sl.registerSingleton(
-    GetRecipeAnalysisUseCase(sl()),
+    GetImagesAnalysisUseCase(sl()),
   );
   sl.registerSingleton(
     GetImageAnalysisUseCase(sl()),

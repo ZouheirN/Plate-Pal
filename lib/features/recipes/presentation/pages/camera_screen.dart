@@ -10,7 +10,6 @@ import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_stat
 import 'package:platepal/features/recipes/presentation/widgets/image_analysis_card.dart';
 import 'package:platepal/features/recipes/presentation/widgets/select_image_sheet.dart';
 import 'package:platepal/injection_container.dart';
-import 'package:platepal/main.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -25,7 +24,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void initState() {
-    _recipeBloc.add(const GetRecipeAnalysis());
+    _recipeBloc.add(const GetImagesAnalysis());
     super.initState();
   }
 
@@ -96,7 +95,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   );
                 }
 
-                if (state is RecipeAnalysisDone) {
+                if (state is ImagesAnalysisDone) {
                   final valueListenable = state.recipeAnalysis;
 
                   return ValueListenableBuilder(
@@ -132,7 +131,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   );
                 }
 
-                if (state is RecipeAnalysisError) {
+                if (state is ImagesAnalysisError) {
                   return const Center(
                     child: Text('Error'),
                   );

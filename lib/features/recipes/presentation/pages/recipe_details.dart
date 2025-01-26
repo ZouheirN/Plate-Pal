@@ -12,6 +12,7 @@ import 'package:platepal/features/recipes/domain/entities/recipe_instructions.da
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_bloc.dart';
 import 'package:platepal/features/recipes/presentation/bloc/recipes/recipes_state.dart';
 import 'package:platepal/injection_container.dart';
+import 'package:platepal/main.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tap_to_expand/tap_to_expand.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -49,6 +50,7 @@ class _RecipeDetailsState extends State<RecipeDetails>
       _recipeBloc.add(EmitRecipeInstructionsSuccess(
           recipeInstructionsEntity: widget.recipeInstructionsEntity!));
     } else {
+      logger.d('Getting recipe instructions');
       _recipeBloc.add(GetRecipeInstructions(recipeId: widget.recipeEntity.id!));
     }
 
@@ -419,7 +421,13 @@ class _RecipeDetailsState extends State<RecipeDetails>
                     recipeInstructionsEntity: state.recipeInstructions!),
               );
             } else if (state is RecipeInstructionsError) {
-              return Text(state.error.toString());
+              if (state.error != null) {
+                return Text(state.error.toString());
+              } else if (state.errorDescription != null) {
+                return Text(state.errorDescription.toString());
+              } else {
+                return const SizedBox();
+              }
             } else {
               return const SizedBox();
             }

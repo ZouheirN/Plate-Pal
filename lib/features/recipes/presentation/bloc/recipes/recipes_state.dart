@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/src/foundation/change_notifier.dart';
+import 'package:flutter/foundation.dart';
 import 'package:platepal/features/recipes/domain/entities/image_analysis.dart';
 import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
 import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
@@ -19,6 +19,7 @@ abstract class RecipesState {
   final File? image;
   final DioException? error;
   final Exception? exception;
+  final ErrorDescription? errorDescription;
 
   const RecipesState({
     this.randomRecipes,
@@ -31,6 +32,7 @@ abstract class RecipesState {
     this.image,
     this.error,
     this.exception,
+    this.errorDescription,
   });
 }
 
@@ -54,8 +56,7 @@ class RecipeInstructionsDone extends RecipesState {
 }
 
 class RecipeInstructionsError extends RecipesState {
-  const RecipeInstructionsError({required DioException error})
-      : super(error: error);
+  const RecipeInstructionsError({super.error, super.errorDescription});
 }
 
 class SimilarRecipesDone extends RecipesState {
@@ -87,13 +88,13 @@ class SearchRecipesError extends RecipesState {
   const SearchRecipesError({required DioException error}) : super(error: error);
 }
 
-class RecipeAnalysisDone extends RecipesState {
-  const RecipeAnalysisDone(ValueListenable valueListenable)
+class ImagesAnalysisDone extends RecipesState {
+  const ImagesAnalysisDone(ValueListenable valueListenable)
       : super(recipeAnalysis: valueListenable);
 }
 
-class RecipeAnalysisError extends RecipesState {
-  const RecipeAnalysisError({required Exception exception})
+class ImagesAnalysisError extends RecipesState {
+  const ImagesAnalysisError({required Exception exception})
       : super(exception: exception);
 }
 

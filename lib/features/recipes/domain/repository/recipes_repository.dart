@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:platepal/core/resources/data_state.dart';
-import 'package:platepal/features/recipes/data/models/image_analysis.dart';
 import 'package:platepal/features/recipes/domain/entities/image_analysis.dart';
 import 'package:platepal/features/recipes/domain/entities/random_recipes.dart';
 import 'package:platepal/features/recipes/domain/entities/recipe_instructions.dart';
@@ -40,7 +39,7 @@ abstract class RecipesRepository {
   });
 
   // Get a value listenable of recipe analysis
-  Future<DataState<ValueListenable>> getRecipeAnalysis();
+  Future<DataState<ValueListenable>> getImagesAnalysis();
 
   // Get image analysis
   Future<DataState<ImageAnalysisEntity>> getImageAnalysis({
